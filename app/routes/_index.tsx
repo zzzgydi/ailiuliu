@@ -1,5 +1,6 @@
-import ReactFlow from "reactflow";
+import { ReactFlowProvider } from "reactflow";
 import type { MetaFunction, LinksFunction } from "@remix-run/node";
+import { MainFlow } from "@/components/view/main-flow";
 import reactFlowStyles from "reactflow/dist/style.css?url";
 
 export const meta: MetaFunction = () => {
@@ -13,16 +14,21 @@ export const links: LinksFunction = () => [
   { rel: "stylesheet", href: reactFlowStyles },
 ];
 
-const initialNodes = [
-  { id: "1", type: "input", position: { x: 0, y: 0 }, data: { label: "1" } },
-  { id: "2", position: { x: 0, y: 100 }, data: { label: "2" } },
-];
-const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
-
 export default function Index() {
   return (
-    <div style={{ width: "100vw", height: "100vh" }}>
-      <ReactFlow nodes={initialNodes} edges={initialEdges} />
+    <div className="w-screen h-screen flex overflow-hidden p-2 gap-2">
+      <div className="flex-none w-[200px]">
+        <div className="w-full h-full bg-background rounded-md overflow-hidden">
+          <h1>AI Liu Liu</h1>
+        </div>
+      </div>
+      <div className="flex-auto h-full w-full">
+        <div className="w-full h-full bg-muted rounded-md overflow-hidden p-1">
+          <ReactFlowProvider>
+            <MainFlow />
+          </ReactFlowProvider>
+        </div>
+      </div>
     </div>
   );
 }

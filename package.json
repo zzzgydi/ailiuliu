@@ -11,6 +11,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@radix-ui/react-context-menu": "^2.2.1",
     "@radix-ui/react-slot": "^1.1.0",
     "@remix-run/node": "^2.9.2",
     "@remix-run/react": "^2.9.2",
@@ -23,7 +24,8 @@
     "react-dom": "18.3.0-canary-c3048aab4-20240326",
     "reactflow": "^11.11.4",
     "tailwind-merge": "^2.3.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "@remix-run/dev": "^2.9.2",
