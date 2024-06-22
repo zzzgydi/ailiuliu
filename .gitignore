@@ -1,8 +1,10 @@
 node_modules
 
+/.wrangler
 /.vscode
 /.cache
 /build
-.env
 .DS_Store
+.env
+*.vars
 

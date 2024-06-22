@@ -1,5 +1,5 @@
 import { ReactFlowProvider } from "reactflow";
-import type { MetaFunction, LinksFunction } from "@remix-run/node";
+import type { MetaFunction, LinksFunction } from "@remix-run/cloudflare";
 import { MainFlow } from "@/components/view/main-flow";
 import reactFlowStyles from "reactflow/dist/style.css?url";
 
