@@ -1,26 +1,19 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import ReactFlow, {
   Background,
   Controls,
   MiniMap,
+  Node,
   addEdge,
   useEdgesState,
   useNodesState,
   useReactFlow,
 } from "reactflow";
 import { nodeTypes } from "@/components/nodes";
-
-const initialNodes = [
-  {
-    id: "node-1",
-    type: "chat",
-    position: { x: 200, y: 200 },
-    data: { label: "" },
-  },
-];
+import { CtxMenu } from "./ctx-menu";
 
 export const MainFlow = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const { project } = useReactFlow();
 
@@ -30,6 +23,27 @@ export const MainFlow = () => {
   );
 
   const domRef = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState<{ x: number; y: number } | null>(
+    null
+  );
+
+  const handleAddNode = (model: any) => {
+    if (!position) return;
+
+    const newNode: Node = {
+      id: Date.now().toString(),
+      type: "chat",
+      position: project(position),
+      data: { model },
+      style: {
+        width: 300,
+        height: 300,
+      },
+    };
+
+    setNodes((nds) => [...nds, newNode]);
+    setPosition(null);
+  };
 
   return (
     <ReactFlow
@@ -60,24 +74,39 @@ export const MainFlow = () => {
         if (!domRef.current) return;
 
         const rect = domRef.current.getBoundingClientRect();
-        const position = project({
+        setPosition({
           x: e.clientX - rect.left,
           y: e.clientY - rect.top,
         });
-
-        const newNode = {
-          id: Date.now().toString(),
-          type: "chat", // 可以根据需要设置节点类型
-          position: position,
-          data: { label: `Node ${nodes.length + 1}` },
-        };
-
-        setNodes((nds) => [...nds, newNode]);
       }}
     >
       <Background />
       <MiniMap />
       <Controls />
+
+      {nodes.length === 0 && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-none">
+          <div className="text-lg text-gray-400">Right-click to add node</div>
+        </div>
+      )}
+
+      {position && (
+        <div
+          className="absolute w-full h-full top-0 left-0 z-20"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setPosition(null);
+          }}
+          onContextMenu={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setPosition(null);
+          }}
+        >
+          <CtxMenu position={position} onAdd={handleAddNode} />
+        </div>
+      )}
     </ReactFlow>
   );
 };

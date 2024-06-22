@@ -4,6 +4,10 @@
 
 @layer base {
   :root {
+    --main-50: #ebe8f1;
+    --main-200: #502eb0;
+    --main-500: #502eb0;
+
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
 
@@ -72,5 +76,42 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+.second-loader {
+  width: 16px;
+  height: 16px;
+  border: 2px solid hsl(var(--muted-foreground));
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+.second-loader::after {
+  content: "";
+  box-sizing: border-box;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid;
+  border-color: var(--main-200) transparent;
+}
+
+.dark .second-loader::after {
+  border-color: var(--main-500) transparent;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }

@@ -1,6 +1,6 @@
 import { ReactFlowProvider } from "reactflow";
 import type { MetaFunction, LinksFunction } from "@remix-run/cloudflare";
-import { MainFlow } from "@/components/view/main-flow";
+import { MainFlow } from "@/components/nodes/main-flow";
 import reactFlowStyles from "reactflow/dist/style.css?url";
 
 export const meta: MetaFunction = () => {

@@ -1,16 +1,22 @@
 import { useState } from "react";
 import { NodeProps, NodeResizer } from "reactflow";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 import { cn } from "@/utils/ui";
+import { ChatInput } from "./chat-input";
 
 const controlStyle = {
   background: "transparent",
   border: "none",
 };
 
-export function ChatNode(props: NodeProps<{ label: string }>) {
-  const [value, setValue] = useState("");
+interface INodeData {
+  model?: {
+    label: string;
+    provider: string;
+    value: string;
+  };
+}
+
+export function ChatNode(props: NodeProps<INodeData>) {
   const [items, setItems] = useState<string[]>([]);
 
   return (
@@ -24,42 +30,33 @@ export function ChatNode(props: NodeProps<{ label: string }>) {
       />
       <div
         className={cn(
-          "border p-2 w-full h-full bg-red-100 rounded-lg flex flex-col min-w-[200px] min-h-[200px]",
-          props.selected && "ring"
+          "border p-2 w-full bg-white h-full rounded-lg flex flex-col min-w-[200px] min-h-[200px]",
+          props.selected &&
+            "ring-2 ring-muted-foreground dark:ring-muted-foreground"
         )}
       >
+        <div className="flex items-center">
+          <div className="text-lg font-bold">Chat</div>
+
+          {props.data.model && (
+            <div className="ml-auto text-xs text-muted-foreground border p-0.5 rounded-md bg-muted">
+              {props.data.model?.label || "No Model Selected"}
+            </div>
+          )}
+        </div>
         <div className="flex-auto">
           {items.map((item, index) => (
             <div key={index}>{item}</div>
           ))}
 
           {!items.length && (
-            <div>
-              <div>暂无数据</div>
+            <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground/50">
+              Say everything you want
             </div>
           )}
         </div>
-
-        <div className="flex-none flex items-center gap-2 nodrag">
-          <Input value={value} onChange={(e) => setValue(e.target.value)} />
-          <Button
-            onClick={() => {
-              if (!value) return;
-              setItems((i) => [...i, value]);
-              setValue("");
-            }}
-          >
-            保存
-          </Button>
-        </div>
+        <ChatInput onSend={async (v) => setItems((l) => [...l, v])} />
       </div>
-      {/* <Handle type="source" position={Position.Bottom} id="a" /> */}
-      {/* <Handle
-        type="source"
-        position={Position.Bottom}
-        id="b"
-        style={handleStyle}
-      /> */}
     </>
   );
 }
