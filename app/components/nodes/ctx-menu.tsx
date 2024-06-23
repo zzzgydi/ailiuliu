@@ -1,8 +1,8 @@
 import { cn } from "@/utils/ui";
 
 const models = [
-  { label: "GPT 4o", provider: "openai", value: "gpt4o" },
-  { label: "GPT 3.5 Turbo", provider: "openai", value: "gpt3.5-turbo" },
+  { label: "GPT 4o", provider: "openai", value: "gpt-4o" },
+  { label: "GPT 3.5 Turbo", provider: "openai", value: "gpt-3.5-turbo" },
   { label: "Deepseek 2", provider: "deepseek", value: "deepseek-chat" },
 ];
 

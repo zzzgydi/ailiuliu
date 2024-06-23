@@ -36,8 +36,8 @@ export const MainFlow = () => {
       position: project(position),
       data: { model },
       style: {
-        width: 300,
-        height: 300,
+        width: 500,
+        height: 600,
       },
     };
 
@@ -65,7 +65,9 @@ export const MainFlow = () => {
       nodeTypes={nodeTypes}
       onContextMenu={(e) => {
         if (
-          !(e.target as HTMLDivElement).className.includes("react-flow__pane")
+          !(e.target as HTMLDivElement)?.className?.includes?.(
+            "react-flow__pane"
+          )
         )
           return;
         e.preventDefault();
@@ -81,7 +83,7 @@ export const MainFlow = () => {
       }}
     >
       <Background />
-      <MiniMap />
+      <MiniMap zoomable pannable />
       <Controls />
 
       {nodes.length === 0 && (

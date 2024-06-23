@@ -24,7 +24,8 @@ export const ChatInput = (props: Props) => {
     try {
       setValue("");
       await onSend(value);
-    } catch {
+    } catch (err: any) {
+      console.error(err);
       setValue((v) => (v === "" ? oldValue : v));
     }
   };
@@ -32,7 +33,7 @@ export const ChatInput = (props: Props) => {
   return (
     <div
       className={cn(
-        "nowheel nodrag relative py-3 pl-3 pr-3 border-solid border border-muted rounded-lg",
+        "relative py-3 pl-3 pr-3 border-solid border border-muted rounded-lg",
         "bg-muted flex gap-2 items-end",
         focus && "ring-2 ring-muted-foreground dark:ring-muted-foreground"
       )}

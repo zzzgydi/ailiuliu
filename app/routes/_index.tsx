@@ -1,7 +1,10 @@
 import { ReactFlowProvider } from "reactflow";
 import type { MetaFunction, LinksFunction } from "@remix-run/cloudflare";
 import { MainFlow } from "@/components/nodes/main-flow";
-import reactFlowStyles from "reactflow/dist/style.css?url";
+import katexStyle from "katex/dist/katex.min.css?url";
+import markdownStyle from "@/assets/markdown.scss?url";
+import highlightStyle from "@/assets/highlight.scss?url";
+import reactFlowStyle from "reactflow/dist/style.css?url";
 
 export const meta: MetaFunction = () => {
   return [
@@ -11,7 +14,10 @@ export const meta: MetaFunction = () => {
 };
 
 export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: reactFlowStyles },
+  { rel: "stylesheet", href: reactFlowStyle },
+  { rel: "stylesheet", href: katexStyle },
+  { rel: "stylesheet", href: markdownStyle },
+  { rel: "stylesheet", href: highlightStyle },
 ];
 
 export default function Index() {

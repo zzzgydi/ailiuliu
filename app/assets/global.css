@@ -77,6 +77,18 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  ::selection {
+    @apply bg-violet-200;
+  }
+
+  .markdown-body pre code::selection {
+    @apply bg-violet-600;
+  }
+
+  .dark ::selection {
+    @apply bg-violet-600;
+  }
 }
 
 .second-loader {
