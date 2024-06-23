@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { poweredBy } from "hono/powered-by";
+import { clerkMiddleware, getAuth } from "@hono/clerk-auth";
 
 const app = new Hono<{
   Bindings: {
@@ -22,7 +23,14 @@ app.use(
   })
 );
 
+app.use("/v1/*", clerkMiddleware());
+
 app.all("/v1/*", async (c, next) => {
+  const auth = getAuth(c);
+  if (!auth) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
   const targetUrl = new URL(c.env.API_BASE);
   const url = new URL(c.req.raw.url);
   url.host = targetUrl.host;
