@@ -9,6 +9,8 @@ const app = new Hono<{
   Bindings: {
     API_BASE: string;
     API_TOKEN: string;
+    CLERK_PUBLISHABLE_KEY: string;
+    CLERK_SECRET_KEY: string;
   };
 }>();
 
@@ -27,7 +29,13 @@ app.use("/v1/*", async (c, next) => {
     Authorization: `Bearer ${c.env.API_TOKEN}`,
   };
 
-  const headers = new Headers(c.req.header());
+  const headers = new Headers();
+  for (const [key, value] of Object.entries(c.req.header())) {
+    if (key.startsWith("x-stainless-")) continue;
+    if (key === "cookie") continue;
+    headers.set(key, value);
+  }
+
   for (const [key, value] of Object.entries(customHeaders)) {
     headers.set(key, value);
   }

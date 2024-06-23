@@ -5,3 +5,7 @@ pages_build_output_dir = "./build/client"
 
 [vars]
 MY_VAR = "Hello from Cloudflare"
+API_BASE = ""
+API_TOKEN = ""
+CLERK_PUBLISHABLE_KEY = ""
+CLERK_SECRET_KEY = ""

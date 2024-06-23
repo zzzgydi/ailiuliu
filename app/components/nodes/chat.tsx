@@ -33,6 +33,7 @@ export function ChatNode(props: NodeProps<INodeData>) {
       baseURL: `${window.location.origin}/v1`,
       apiKey: "sk-123123123123123123123123123123",
       dangerouslyAllowBrowser: true,
+      maxRetries: 1,
     });
 
     const messages = [
