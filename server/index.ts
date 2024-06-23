@@ -7,7 +7,7 @@ import { remix } from "remix-hono/handler";
 
 const app = new Hono<{
   Bindings: {
-    MY_VAR: string;
+    API_BASE: string;
     API_TOKEN: string;
   };
 }>();
@@ -15,7 +15,31 @@ const app = new Hono<{
 let handler: RequestHandler | undefined;
 
 app.use(poweredBy());
-app.get("/hono", (c) => c.text("Hono, " + c.env.MY_VAR));
+
+app.use("/v1/*", async (c, next) => {
+  const targetUrl = new URL(c.env.API_BASE);
+  const url = new URL(c.req.raw.url);
+  url.host = targetUrl.host;
+  url.port = targetUrl.port;
+  url.protocol = targetUrl.protocol;
+
+  const customHeaders = {
+    Authorization: `Bearer ${c.env.API_TOKEN}`,
+  };
+
+  const headers = new Headers(c.req.header());
+  for (const [key, value] of Object.entries(customHeaders)) {
+    headers.set(key, value);
+  }
+
+  const res = await fetch(url.toString(), {
+    method: c.req.method,
+    headers,
+    body: await c.req.blob(),
+  });
+
+  return new Response(res.body, res);
+});
 
 app.use(
   async (c, next) => {
