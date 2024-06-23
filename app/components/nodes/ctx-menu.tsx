@@ -1,18 +1,16 @@
+import useSWRImmutable from "swr/immutable";
 import { cn } from "@/utils/ui";
-
-const models = [
-  { label: "GPT 4o", provider: "openai", value: "gpt-4o" },
-  { label: "GPT 3.5 Turbo", provider: "openai", value: "gpt-3.5-turbo" },
-  { label: "Deepseek 2", provider: "deepseek", value: "deepseek-chat" },
-];
+import { ModelIcon } from "./model-icon";
 
 interface Props {
   position: { x: number; y: number };
-  onAdd?: (model: (typeof models)[0]) => void;
+  onAdd?: (model: IModel) => void;
 }
 
 export const CtxMenu = (props: Props) => {
   const { position, onAdd } = props;
+
+  const { data } = useSWRImmutable<IModel[]>("/api/models");
 
   return (
     <div
@@ -24,7 +22,7 @@ export const CtxMenu = (props: Props) => {
         top: position.y,
       }}
     >
-      {models.map((m) => (
+      {data?.map((m) => (
         <div
           key={m.value}
           className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none 
@@ -32,9 +30,14 @@ export const CtxMenu = (props: Props) => {
             focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
           onClick={() => onAdd?.(m)}
         >
-          {m.label}
+          <ModelIcon model={m} className="w-4 h-4 mr-1" />
+          <span>{m.label}</span>
         </div>
       ))}
+
+      {!data && (
+        <div className="text-center p-1 text-muted-foreground">Loading...</div>
+      )}
     </div>
   );
 };

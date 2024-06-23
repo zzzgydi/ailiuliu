@@ -3,9 +3,11 @@ import { useState } from "react";
 import { produce } from "immer";
 import { v4 as uuid } from "uuid";
 import { NodeProps, NodeResizer } from "reactflow";
+import { cn } from "@/utils/ui";
 import { ChatInput } from "./chat-input";
 import { MarkdownContent } from "./markdown";
-import { cn } from "@/utils/ui";
+import { baseURL } from "@/services/base";
+import { ModelIcon } from "./model-icon";
 
 const controlStyle = {
   background: "transparent",
@@ -28,11 +30,6 @@ export function ChatNode(props: NodeProps<INodeData>) {
   const handleChat = async (query: string) => {
     query = query.trim();
     if (!query) return;
-
-    let baseURL = window.location.origin;
-    if (process.env.NODE_ENV === "development") {
-      baseURL = import.meta.env.VITE_API_BASR_URL || "";
-    }
 
     const openai = new OpenAI({
       baseURL: `${baseURL}/v1`,
@@ -89,11 +86,15 @@ export function ChatNode(props: NodeProps<INodeData>) {
         )}
       >
         <div className="flex items-center p-2">
-          <div className="text-lg font-bold">Chat</div>
+          <ModelIcon model={props.data.model} className="w-5 h-5 mr-1" />
+
+          <div className="text-lg font-bold">
+            <span>Chat</span>
+          </div>
 
           {props.data.model && (
             <div className="ml-auto text-xs text-muted-foreground border p-0.5 rounded-md bg-muted">
-              {props.data.model?.label || "No Model Selected"}
+              {props.data.model?.label || "No Model"}
             </div>
           )}
         </div>
