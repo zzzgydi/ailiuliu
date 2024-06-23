@@ -29,8 +29,13 @@ export function ChatNode(props: NodeProps<INodeData>) {
     query = query.trim();
     if (!query) return;
 
+    let baseURL = window.location.origin;
+    if (process.env.NODE_ENV === "development") {
+      baseURL = import.meta.env.VITE_API_BASR_URL || "";
+    }
+
     const openai = new OpenAI({
-      baseURL: `${window.location.origin}/v1`,
+      baseURL: `${baseURL}/v1`,
       apiKey: "sk-123123123123123123123123123123",
       dangerouslyAllowBrowser: true,
       maxRetries: 1,

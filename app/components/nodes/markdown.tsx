@@ -11,6 +11,9 @@ import { useDebounceFn } from "ahooks";
 import { Check, Copy, SquareArrowOutUpRight } from "lucide-react";
 import { Button } from "../ui/button";
 import { toast } from "../ui/use-toast";
+import "katex/dist/katex.min.css";
+import "@/assets/markdown.scss";
+import "@/assets/highlight.scss";
 
 const MarkdownInner = (props: { content: string }) => {
   return (

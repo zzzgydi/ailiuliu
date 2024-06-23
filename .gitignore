@@ -4,6 +4,7 @@ node_modules
 /.vscode
 /.cache
 /build
+/dist
 .DS_Store
 .env
 *.vars
