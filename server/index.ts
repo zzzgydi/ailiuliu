@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { poweredBy } from "hono/powered-by";
 import { clerkMiddleware, getAuth } from "@hono/clerk-auth";
+import { models } from "./models";
 
 const app = new Hono<{
   Bindings: {
@@ -12,7 +13,24 @@ const app = new Hono<{
   };
 }>();
 
+const modelSet = new Set(models.map((model) => model.value));
+
 app.use(poweredBy());
+
+app.use(
+  "/api/*",
+  cors({
+    origin: ["http://localhost:5173"],
+    maxAge: 600,
+    credentials: true,
+  })
+);
+
+app.use("/api/*", clerkMiddleware());
+
+app.get("/api/models", async (c) => {
+  return c.json(models);
+});
 
 app.use(
   "/v1/*",
@@ -52,10 +70,18 @@ app.all("/v1/*", async (c, next) => {
     headers.set(key, value);
   }
 
+  const data = await c.req.json();
+  if (!data.model) {
+    return new Response("Bad Request", { status: 400 });
+  }
+  if (!modelSet.has(data.model)) {
+    return new Response("Bad Request", { status: 400 });
+  }
+
   const res = await fetch(url.toString(), {
     method: c.req.method,
     headers,
-    body: await c.req.blob(),
+    body: JSON.stringify(data),
   });
 
   return new Response(res.body, res);

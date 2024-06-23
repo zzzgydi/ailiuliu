@@ -17,9 +17,9 @@ export default function Index() {
 
   return (
     <div className="w-screen h-screen flex overflow-hidden p-2 gap-2">
-      <div className="flex-none w-[200px]">
+      <div className="flex-none w-[250px]">
         <div className="w-full h-full bg-background rounded-md overflow-hidden">
-          <h1>AI Liu Liu</h1>
+          <h1 className="p-1 text-lg font-medium">AI Liu Liu</h1>
         </div>
       </div>
       <div className="flex-auto h-full w-full">
