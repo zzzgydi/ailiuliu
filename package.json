@@ -8,6 +8,7 @@
     "dev:cf": "wrangler dev server/index.ts",
     "build": "tsc && vite build",
     "deploy": "wrangler pages deploy",
+    "clear": "kill -9 $(pgrep workerd)",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "preview": "vite preview"
   },
@@ -75,6 +76,6 @@
     "wrangler": "^3.61.0"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=18.0.0"
   }
 }

@@ -7,13 +7,14 @@ import { Button } from "@/components/ui/button";
 interface Props {
   loading?: boolean;
   onSend?: (value: string) => Promise<void>;
+  onFocus?: (focus: boolean) => void;
 }
 
 export const ChatInput = (props: Props) => {
-  const { loading, onSend } = props;
+  const { loading, onSend, onFocus } = props;
 
   const [value, setValue] = useState("");
-  const [focus, setFocus] = useState(false);
+  // const [focus, setFocus] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSend = async () => {
@@ -34,8 +35,8 @@ export const ChatInput = (props: Props) => {
     <div
       className={cn(
         "relative py-3 pl-3 pr-3 border-solid border border-muted rounded-lg",
-        "bg-muted flex gap-2 items-end",
-        focus && "ring-2 ring-muted-foreground dark:ring-muted-foreground"
+        "bg-muted flex gap-2 items-end"
+        // focus && "ring-2 ring-muted-foreground dark:ring-muted-foreground"
       )}
     >
       <BaseInput
@@ -46,7 +47,7 @@ export const ChatInput = (props: Props) => {
         placeholder="Ask Anything..."
         onChange={(v) => setValue(v)}
         onEnter={handleSend}
-        onFocus={setFocus}
+        onFocus={onFocus}
       />
 
       <div className="w-6 h-6 flex items-center">

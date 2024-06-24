@@ -19,11 +19,7 @@ app.use(poweredBy());
 
 app.use(
   "/api/*",
-  cors({
-    origin: ["http://localhost:5173"],
-    maxAge: 600,
-    credentials: true,
-  })
+  cors({ origin: ["http://localhost:5173"], maxAge: 600, credentials: true })
 );
 
 app.use("/api/*", clerkMiddleware());
@@ -32,18 +28,7 @@ app.get("/api/models", async (c) => {
   return c.json(models);
 });
 
-app.use(
-  "/v1/*",
-  cors({
-    origin: ["http://localhost:5173"],
-    maxAge: 600,
-    credentials: true,
-  })
-);
-
-app.use("/v1/*", clerkMiddleware());
-
-app.all("/v1/*", async (c, next) => {
+app.all("/api/v1/*", async (c, next) => {
   const auth = getAuth(c);
   if (!auth) {
     return new Response("Unauthorized", { status: 401 });
@@ -54,6 +39,7 @@ app.all("/v1/*", async (c, next) => {
   url.host = targetUrl.host;
   url.port = targetUrl.port;
   url.protocol = targetUrl.protocol;
+  url.pathname = url.pathname.replace(/^\/api/, "");
 
   const customHeaders = {
     Authorization: `Bearer ${c.env.API_TOKEN}`,

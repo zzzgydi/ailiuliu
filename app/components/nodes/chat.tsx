@@ -2,7 +2,7 @@ import OpenAI from "openai";
 import { useState } from "react";
 import { produce } from "immer";
 import { v4 as uuid } from "uuid";
-import { NodeProps, NodeResizer } from "reactflow";
+import { NodeProps, NodeResizer, useStoreApi } from "reactflow";
 import { cn } from "@/utils/ui";
 import { ChatInput } from "./chat-input";
 import { MarkdownContent } from "./markdown";
@@ -23,6 +23,8 @@ interface INodeData {
 }
 
 export function ChatNode(props: NodeProps<INodeData>) {
+  const storeApi = useStoreApi();
+
   const [items, setItems] = useState<
     { id: string; role: string; content: string }[]
   >([]);
@@ -32,7 +34,7 @@ export function ChatNode(props: NodeProps<INodeData>) {
     if (!query) return;
 
     const openai = new OpenAI({
-      baseURL: `${baseURL}/v1`,
+      baseURL: `${baseURL}/api/v1`,
       apiKey: "sk-123123123123123123123123123123",
       dangerouslyAllowBrowser: true,
       maxRetries: 1,
@@ -131,7 +133,12 @@ export function ChatNode(props: NodeProps<INodeData>) {
           )}
         </div>
         <div className="nowheel nodrag flex-none p-2">
-          <ChatInput onSend={handleChat} />
+          <ChatInput
+            onSend={handleChat}
+            onFocus={(f) => {
+              if (f) storeApi.getState().addSelectedNodes([props.id]);
+            }}
+          />
         </div>
       </div>
     </>
