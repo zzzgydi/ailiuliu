@@ -1,6 +1,7 @@
 import { Claude } from "@lobehub/icons";
 import { DeepSeek } from "@lobehub/icons";
 import { Gemini } from "@lobehub/icons";
+import { Gemma } from "@lobehub/icons";
 import { Groq } from "@lobehub/icons";
 import { OpenAI } from "@lobehub/icons";
 import { Mistral } from "@lobehub/icons";
@@ -21,6 +22,8 @@ export const ModelIcon = ({ model, className }: Props) => {
       return <DeepSeek.Color className={className} />;
     case "gemini":
       return <Gemini.Color className={className} />;
+    case "gemma":
+      return <Gemma.Color className={className} />;
     case "groq":
       return <Groq className={className} />;
     case "openai":
