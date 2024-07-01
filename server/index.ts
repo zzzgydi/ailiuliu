@@ -17,11 +17,6 @@ const modelSet = new Set(models.map((model) => model.value));
 
 app.use(poweredBy());
 
-app.use(
-  "/api/*",
-  cors({ origin: ["http://localhost:5173"], maxAge: 600, credentials: true })
-);
-
 app.use("/api/*", clerkMiddleware());
 
 app.get("/api/models", async (c) => {
