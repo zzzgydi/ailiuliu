@@ -8,10 +8,9 @@ import (
 )
 
 func main() {
-	env := config.GetEnv()
 	rootDir := config.GetRootDir()
 	logger.InitLogger(rootDir)
-	config.InitConfig(rootDir, env)
+	config.InitConfig()
 	initializer.InitInitializer()
 	router.InitHttpServer()
 }

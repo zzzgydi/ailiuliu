@@ -11,5 +11,5 @@ build:
 
 dev: build
 	mkdir -p $(OUTDIR)/log
-
-	CONFIG_ENV=dev $(OUTDIR)/$(PROJECTNAME)
+	@if [ -f .env ]; then cp .env $(OUTDIR)/.env; fi
+	cd $(OUTDIR) && ./$(PROJECTNAME)

@@ -3,27 +3,24 @@ package common
 import (
 	"context"
 	"fmt"
-	"strconv"
 
 	"github.com/redis/go-redis/v9"
-	"github.com/zzzgydi/ailiuliu/common/config"
+	"github.com/spf13/viper"
 	"github.com/zzzgydi/ailiuliu/common/initializer"
 )
 
 var RDB *redis.Client
 
-func InitRedis() error {
-	conf := &config.AppConf.Redis
-	if conf.Url == "" || conf.Port == 0 {
-		return fmt.Errorf("redis conf error")
+func initRedis() error {
+	dsn := viper.GetString("REDIS_DSN")
+	if dsn == "" {
+		return fmt.Errorf("redis dsn error")
 	}
-	addr := conf.Url + ":" + strconv.FormatInt(int64(conf.Port), 10)
-	RDB = redis.NewClient(&redis.Options{
-		Addr:     addr,
-		Password: conf.Password,
-	})
 
-	_, err := RDB.Ping(context.Background()).Result()
+	opt, err := redis.ParseURL(dsn)
+	RDB = redis.NewClient(opt)
+
+	_, err = RDB.Ping(context.Background()).Result()
 	if err != nil {
 		return fmt.Errorf("redis connect error: %s", err)
 	}
@@ -32,5 +29,5 @@ func InitRedis() error {
 }
 
 func init() {
-	initializer.Register("redis", InitRedis)
+	initializer.Register("redis", initRedis)
 }
