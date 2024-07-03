@@ -12,5 +12,10 @@ func GetTraceLogger(c *gin.Context) *logger.TraceLogger {
 			return trace
 		}
 	}
-	return nil
+
+	trace := logger.NewTraceLogger(c)
+	trace.SetIp(c.ClientIP())
+	c.Set(common.CTX_TRACE_LOGGER, trace)
+
+	return trace
 }
