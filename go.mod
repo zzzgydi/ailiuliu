@@ -2,13 +2,15 @@ module github.com/zzzgydi/ailiuliu
 
 go 1.22.0
 
-require gorm.io/driver/mysql v1.5.7
+require (
+	github.com/clerk/clerk-sdk-go/v2 v2.0.4
+	gorm.io/driver/mysql v1.5.7
+)
 
 require (
 	github.com/bytedance/sonic v1.11.6 // indirect
 	github.com/bytedance/sonic/loader v0.1.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
-	github.com/clerk/clerk-sdk-go/v2 v2.0.4 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect
 	github.com/cloudwego/iasm v0.2.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
@@ -57,9 +59,9 @@ require (
 	github.com/spf13/afero v1.11.0 // indirect
 	github.com/spf13/cast v1.6.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/spf13/viper v1.19.0 // indirect
+	github.com/spf13/viper v1.19.0
 	github.com/subosito/gotenv v1.6.0 // indirect
-	github.com/zzzgydi/slog-gorm v0.0.0-20240401110836-ab07ad30a474 // indirect
+	github.com/zzzgydi/slog-gorm v0.0.0-20240401110836-ab07ad30a474
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.9.0 // indirect
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
@@ -69,5 +71,5 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gorm.io/driver/postgres v1.5.9
 	gorm.io/driver/sqlite v1.5.6
-	gorm.io/gorm v1.25.10 // indirect
+	gorm.io/gorm v1.25.10
 )

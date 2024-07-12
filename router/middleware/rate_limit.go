@@ -9,7 +9,7 @@ import (
 )
 
 func RateLimiterMiddleware() gin.HandlerFunc {
-	ipLimiter := utils.NewRateLimiter("z:rl:ip", 20, 60*60)     // 1小时 最多15次
+	ipLimiter := utils.NewRateLimiter("z:rl:ip", 20, 60*60)     // 1小时 最多20次
 	userLimiter := utils.NewRateLimiter("z:rl:user", 60, 60*60) // 1小时 最多60次
 
 	return func(c *gin.Context) {

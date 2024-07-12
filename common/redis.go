@@ -13,11 +13,18 @@ var RDB *redis.Client
 
 func initRedis() error {
 	dsn := viper.GetString("REDIS_DSN")
+	if dsn[0] == '"' && dsn[len(dsn)-1] == '"' {
+		dsn = dsn[1 : len(dsn)-1]
+	}
 	if dsn == "" {
 		return fmt.Errorf("redis dsn error")
 	}
 
 	opt, err := redis.ParseURL(dsn)
+	if err != nil {
+		return fmt.Errorf("redis parse url error: %s", err)
+	}
+
 	RDB = redis.NewClient(opt)
 
 	_, err = RDB.Ping(context.Background()).Result()

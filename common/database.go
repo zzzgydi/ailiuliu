@@ -1,8 +1,10 @@
 package common
 
 import (
+	"database/sql"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/spf13/viper"
 	"github.com/zzzgydi/ailiuliu/common/initializer"
@@ -18,6 +20,9 @@ var MDB *gorm.DB
 
 func initDatabase() error {
 	dsn := viper.GetString("DATABASE_DSN")
+	if dsn[0] == '"' && dsn[len(dsn)-1] == '"' {
+		dsn = dsn[1 : len(dsn)-1]
+	}
 	if dsn == "" {
 		return fmt.Errorf("database dsn error")
 	}
@@ -25,23 +30,28 @@ func initDatabase() error {
 	gormLogger := slogGorm.New(
 		slogGorm.WithHandler(L.Logger.Handler()),
 		slogGorm.WithParameterizedQueries(true),
-		slogGorm.WithSlowThreshold(200),
+		slogGorm.WithSlowThreshold(200*time.Millisecond),
 	)
 
 	var dialector gorm.Dialector
 
 	if strings.HasPrefix(dsn, "mysql://") {
+		dsn = strings.TrimPrefix(dsn, "mysql://")
 		dialector = mysql.Open(dsn)
 	} else if strings.HasPrefix(dsn, "postgres://") {
+		sqlDB, err := sql.Open("pgx", dsn)
+		if err != nil {
+			return err
+		}
 		dialector = postgres.New(postgres.Config{
-			DSN:                  dsn,
+			Conn:                 sqlDB,
 			PreferSimpleProtocol: true,
 		})
 	} else if strings.HasPrefix(dsn, "sqlite://") {
 		dsn = strings.TrimPrefix(dsn, "sqlite://")
-		dialector = gorm.Dialector(sqlite.Open(dsn))
+		dialector = sqlite.Open(dsn)
 	} else {
-		return fmt.Errorf("unknown database dsn")
+		return fmt.Errorf("unknown database dsn: %s", dsn)
 	}
 
 	db, err := gorm.Open(dialector, &gorm.Config{Logger: gormLogger, PrepareStmt: true})
@@ -54,5 +64,5 @@ func initDatabase() error {
 }
 
 func init() {
-	initializer.Register("mysql", initDatabase)
+	initializer.Register("database", initDatabase)
 }
