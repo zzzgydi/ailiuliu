@@ -1,21 +1,26 @@
 package model
 
 import (
+	"log/slog"
+
 	"github.com/spf13/viper"
 	"github.com/zzzgydi/ailiuliu/common"
 	"github.com/zzzgydi/ailiuliu/common/initializer"
 )
 
 func initModel() error {
-	return common.MDB.AutoMigrate(
-		&User{},
-		&Space{},
-		&ModelProvider{},
-	)
+	if viper.GetBool("DATABASE_AUTO_MIGRATE") {
+		return common.MDB.AutoMigrate(
+			&User{},
+			&Space{},
+			&ModelProvider{},
+		)
+	} else {
+		slog.Info("skip auto migrate")
+	}
+	return nil
 }
 
 func init() {
-	if viper.GetBool("DATABASE_AUTO_MIGRATE") {
-		initializer.Register("migrate", initModel)
-	}
+	initializer.Register("migrate", initModel)
 }
