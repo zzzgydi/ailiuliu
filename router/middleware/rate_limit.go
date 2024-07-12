@@ -15,7 +15,7 @@ func RateLimiterMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 先判断是否为登录用户
 		// 如果是登录用户，则使用用户ID作为限流key
-		userId := utils.GetUserID(c)
+		userId := utils.GetContextUserId(c)
 		ip := c.ClientIP()
 
 		var allow bool

@@ -6,4 +6,8 @@ func RootRouter(r *gin.Engine) {
 	r.GET("/", func(c *gin.Context) {
 		c.Redirect(301, "https://ailiuliu.com")
 	})
+
+	r.GET("/health", func(c *gin.Context) {
+		c.String(200, "ok")
+	})
 }

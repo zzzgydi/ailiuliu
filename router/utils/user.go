@@ -5,7 +5,7 @@ import (
 	"github.com/zzzgydi/ailiuliu/common"
 )
 
-func GetUserID(c *gin.Context) string {
+func GetContextUserId(c *gin.Context) string {
 	user, _ := c.Get(common.CTX_CURRENT_USER)
 	if user != nil {
 		if u, ok := user.(string); ok {
