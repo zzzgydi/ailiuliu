@@ -10,7 +10,7 @@ interface Props {
 export const CtxMenu = (props: Props) => {
   const { position, onAdd } = props;
 
-  const { data } = useSWRImmutable<IModel[]>("/api/models");
+  const { data } = useSWRImmutable<IModel[]>("/api/model/list");
 
   return (
     <div
