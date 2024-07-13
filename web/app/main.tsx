@@ -1,8 +1,8 @@
-import { Suspense } from "react";
+import { Suspense, useMemo } from "react";
 import { SWRConfig } from "swr/_internal";
 import { BrowserRouter, useNavigate, useRoutes } from "react-router-dom";
-import { ClerkProvider } from "@clerk/clerk-react";
-import { fetcher } from "@/services/base";
+import { ClerkProvider, useAuth } from "@clerk/clerk-react";
+import { createFetcher } from "@/services/base";
 import ReactDOM from "react-dom/client";
 import routes from "~react-pages";
 import "@/assets/global.css";
@@ -14,27 +14,33 @@ if (!PUBLISHABLE_KEY) {
   throw new Error("Missing Publishable Key");
 }
 
+function Auth() {
+  const { getToken } = useAuth();
+
+  const fetcher = useMemo(() => createFetcher(getToken), [getToken]);
+
+  return (
+    <SWRConfig value={{ fetcher }}>
+      <Suspense fallback={<p>Loading...</p>}>{useRoutes(routes)}</Suspense>
+    </SWRConfig>
+  );
+}
+
 function App() {
   const navigate = useNavigate();
 
   return (
-    <SWRConfig
-      value={{
-        fetcher,
-      }}
+    <ClerkProvider
+      publishableKey={PUBLISHABLE_KEY}
+      routerPush={(to) => navigate(to)}
+      routerReplace={(to) => navigate(to, { replace: true })}
+      signInUrl="/sign-in"
+      signUpUrl="/sign-up"
+      signInFallbackRedirectUrl="/"
+      signUpFallbackRedirectUrl="/"
     >
-      <ClerkProvider
-        publishableKey={PUBLISHABLE_KEY}
-        routerPush={(to) => navigate(to)}
-        routerReplace={(to) => navigate(to, { replace: true })}
-        signInUrl="/sign-in"
-        signUpUrl="/sign-up"
-        signInFallbackRedirectUrl="/"
-        signUpFallbackRedirectUrl="/"
-      >
-        <Suspense fallback={<p>Loading...</p>}>{useRoutes(routes)}</Suspense>
-      </ClerkProvider>
-    </SWRConfig>
+      <Auth />
+    </ClerkProvider>
   );
 }
 

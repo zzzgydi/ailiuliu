@@ -10,7 +10,7 @@ interface Props {
 export const CtxMenu = (props: Props) => {
   const { position, onAdd } = props;
 
-  const { data } = useSWRImmutable<IModel[]>("/api/model/list");
+  const { data, isLoading } = useSWRImmutable<IModel[]>("/api/model/list");
 
   return (
     <div
@@ -35,8 +35,12 @@ export const CtxMenu = (props: Props) => {
         </div>
       ))}
 
-      {!data && (
+      {isLoading ? (
         <div className="text-center p-1 text-muted-foreground">Loading...</div>
+      ) : (
+        !data?.length && (
+          <div className="text-center p-1 text-muted-foreground">Empty</div>
+        )
       )}
     </div>
   );
