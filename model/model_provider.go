@@ -7,7 +7,7 @@ import (
 )
 
 type ModelProvider struct {
-	ID        int       `json:"id" db:"id" gorm:"primary_key;autoIncrement"`
+	Id        int       `json:"id" db:"id" gorm:"primary_key;autoIncrement"`
 	Label     string    `json:"label" db:"label"`
 	Provider  string    `json:"provider" db:"provider"`
 	Value     string    `json:"value" db:"value"`
@@ -18,6 +18,16 @@ type ModelProvider struct {
 
 func (ModelProvider) TableName() string {
 	return "model_provider"
+}
+
+func CreateModelProvider(mp *ModelProvider) error {
+	mp.CreatedAt = time.Now()
+	mp.UpdatedAt = time.Now()
+	err := common.MDB.Create(mp).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func GetModelProviderList() ([]*ModelProvider, error) {

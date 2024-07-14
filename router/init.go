@@ -18,6 +18,7 @@ func InitHttpServer() {
 	// register routers
 	RootRouter(r)
 	APIRouter(r)
+	AdminAPIRouter(r)
 
 	logger := slog.NewLogLogger(L.Handler, slog.LevelError)
 

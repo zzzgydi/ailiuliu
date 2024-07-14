@@ -9,7 +9,16 @@ import (
 func APIRouter(r *gin.Engine) {
 	api := r.Group("/api")
 
-	api.Use(middleware.AuthMiddleware())
+	api.Use(middleware.LoggerMiddleware, middleware.AuthMiddleware())
 
 	api.GET("/model/list", controller.GetModelList)
+}
+
+func AdminAPIRouter(r *gin.Engine) {
+	admin := r.Group("/api/admin")
+
+	admin.Use(middleware.LoggerMiddleware, middleware.AuthMiddleware(), middleware.AdminMiddleware())
+
+	admin.GET("/model/list", controller.AdminGetAllModelProvider)
+	admin.POST("/model/create", controller.AdminPostModelProvider)
 }
