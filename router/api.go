@@ -21,4 +21,6 @@ func APIRouter(r *gin.Engine) {
 	api.POST("/space/update_data", controller.UpdateSpaceData)
 	api.POST("/space/create_node", controller.CreateSpaceNode)
 	api.POST("/space/delete_node", controller.DeleteSpaceNode)
+
+	api.POST("/space/chat", controller.StreamChat)
 }

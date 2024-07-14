@@ -32,6 +32,14 @@ func CreateSpaceNode(spaceId int, data json.RawMessage) (*SpaceNode, error) {
 	return spaceNode, nil
 }
 
+func GetSpaceNode(spaceId, nodeId int) (*SpaceNode, error) {
+	node := &SpaceNode{}
+	if err := common.MDB.Where("space_id = ? and id = ?", spaceId, nodeId).First(node).Error; err != nil {
+		return nil, err
+	}
+	return node, nil
+}
+
 func GetSpaceNodeList(spaceId int) ([]*SpaceNode, error) {
 	var nodes []*SpaceNode
 	if err := common.MDB.Where("space_id = ?", spaceId).Find(&nodes).Error; err != nil {
