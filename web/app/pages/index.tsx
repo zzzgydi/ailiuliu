@@ -1,20 +1,9 @@
 import { ReactFlowProvider } from "reactflow";
-import { useAuth } from "@clerk/clerk-react";
-import { Navigate } from "react-router-dom";
 import { MainFlow } from "@/components/nodes/main-flow";
+import { AuthLayout } from "@/components/base/auth-layout";
 import "reactflow/dist/style.css";
 
-export default function Index() {
-  const { getToken, isLoaded, isSignedIn } = useAuth();
-
-  if (!isLoaded) {
-    return null;
-  }
-
-  if (!isSignedIn) {
-    return <Navigate to="/sign-in" replace={true} />;
-  }
-
+const Page = () => {
   return (
     <div className="w-screen h-screen flex overflow-hidden p-2 gap-2">
       <div className="flex-none w-[250px]">
@@ -30,5 +19,13 @@ export default function Index() {
         </div>
       </div>
     </div>
+  );
+};
+
+export default function Index() {
+  return (
+    <AuthLayout>
+      <Page />
+    </AuthLayout>
   );
 }
