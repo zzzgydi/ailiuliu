@@ -13,6 +13,7 @@ func initModel() error {
 		return common.MDB.AutoMigrate(
 			&User{},
 			&Space{},
+			&SpaceNode{},
 			&ModelProvider{},
 		)
 	} else {
