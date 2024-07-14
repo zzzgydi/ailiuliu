@@ -1,15 +1,14 @@
-import OpenAI from "openai";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { produce } from "immer";
-import { v4 as uuid } from "uuid";
 import { NodeProps, NodeResizer, useStoreApi } from "reactflow";
 import { cn } from "@/utils/ui";
 import { ChatInput } from "./chat-input";
 import { MarkdownContent } from "./markdown";
-import { baseURL, fetchStream } from "@/services/base";
+import { fetchStream } from "@/services/base";
 import { ModelIcon } from "./model-icon";
 import { useParams } from "react-router-dom";
 import { toast } from "../ui/use-toast";
+import useSWRImmutable from "swr/immutable";
 
 const controlStyle = {
   background: "transparent",
@@ -31,11 +30,22 @@ export function ChatNode(props: NodeProps<INodeData>) {
   } = props;
   const { id: spaceIdStr } = useParams<{ id: string }>();
 
+  const { data: chatHistory } = useSWRImmutable<IChatMessage[]>(
+    `/api/space/chat_history?space_id=${spaceIdStr}&node_id=${nodeId}`
+  );
+
   const storeApi = useStoreApi();
 
   const [items, setItems] = useState<
     { id: number; role: string; content: string }[]
   >([]);
+
+  useEffect(() => {
+    const ret = chatHistory?.slice();
+    ret?.reverse();
+
+    setItems(ret ?? []);
+  }, [chatHistory]);
 
   const handleChat = async (query: string) => {
     query = query.trim();

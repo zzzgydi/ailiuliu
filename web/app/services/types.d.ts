@@ -41,3 +41,10 @@ interface ISpaceNode {
   created_at: string;
   updated_at: string;
 }
+
+interface IChatMessage {
+  id: number;
+  node_id: number;
+  role: string;
+  content: string;
+}
