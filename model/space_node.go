@@ -53,9 +53,15 @@ func UpdateSpaceNode(spaceId, nodeId int, data json.RawMessage) error {
 }
 
 func BatchUpdateSpaceNode(spaceId int, nodes []*SpaceNode) error {
+	now := time.Now()
 	tx := common.MDB.Begin()
 	for _, node := range nodes {
-		if err := tx.Model(&SpaceNode{}).Where("space_id = ? and id = ?", spaceId, node.Id).Updates(node).Error; err != nil {
+		if node.Id == 0 {
+			continue
+		}
+		node.UpdatedAt = now
+		if err := tx.Model(&SpaceNode{}).Where("space_id = ? and id = ?", spaceId, node.Id).
+			Omit("id", "space_id", "created_at").Updates(node).Error; err != nil {
 			tx.Rollback()
 			return err
 		}
