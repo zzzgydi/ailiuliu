@@ -10,6 +10,34 @@ interface IModelProvider {
   provider: string;
   value: string;
   level: number;
-  created_at: Date;
-  updated_at: Date;
+  created_at: string;
+  updated_at: string;
+}
+
+interface ISpaceDetail {
+  space: ISpace;
+  nodes: ISpaceNode[];
+}
+
+interface ISpace {
+  id: number;
+  name: string;
+  meta?: ISpaceMeta;
+  created_at: string;
+  updated_at: string;
+}
+interface ISpaceMeta {
+  viewport?: {
+    x: number;
+    y: number;
+    zoom: number;
+  };
+}
+
+interface ISpaceNode {
+  id: number;
+  space_id: number;
+  data?: any;
+  created_at: string;
+  updated_at: string;
 }
