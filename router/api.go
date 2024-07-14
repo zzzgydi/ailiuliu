@@ -23,4 +23,5 @@ func APIRouter(r *gin.Engine) {
 	api.POST("/space/delete_node", controller.DeleteSpaceNode)
 
 	api.POST("/space/chat", controller.StreamChat)
+	api.GET("/space/chat_history", controller.GetChatHistory)
 }
