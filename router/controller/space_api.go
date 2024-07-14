@@ -175,3 +175,33 @@ func CreateSpaceNode(c *gin.Context) {
 
 	ReturnSuccess(c, node)
 }
+
+func DeleteSpaceNode(c *gin.Context) {
+	userId := utils.GetContextUserId(c)
+
+	var req struct {
+		SpaceId int `json:"space_id,omitempty"`
+		NodeId  int `json:"node_id,omitempty"`
+	}
+	if err := c.BindJSON(&req); err != nil {
+		ReturnBadRequest(c, err)
+		return
+	}
+
+	if req.SpaceId == 0 {
+		ReturnBadRequest(c, fmt.Errorf("space id is required"))
+		return
+	}
+
+	if req.NodeId == 0 {
+		ReturnBadRequest(c, fmt.Errorf("node id is required"))
+		return
+	}
+
+	if err := space.DeleteSpaceNode(userId, req.SpaceId, req.NodeId); err != nil {
+		ReturnServerError(c, err)
+		return
+	}
+
+	ReturnSuccess(c, nil)
+}
