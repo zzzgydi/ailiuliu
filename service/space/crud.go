@@ -37,13 +37,18 @@ func UpdateSpaceName(userId string, spaceId int, name string) error {
 	if name == "" {
 		name = "Untitled"
 	}
-	return model.UpdateSpace(userId, spaceId, name)
+	return model.UpdateSpaceName(userId, spaceId, name)
 }
 
-func UpdateSpaceData(userId string, spaceId int, nodes []*model.SpaceNode) error {
+func UpdateSpaceData(userId string, spaceId int, meta []byte, nodes []*model.SpaceNode) error {
 	// check space ownership
 	_, err := model.GetSpaceById(userId, spaceId)
 	if err != nil {
+		return err
+	}
+
+	// update space meta
+	if err := model.UpdateSpaceMeta(userId, spaceId, meta); err != nil {
 		return err
 	}
 

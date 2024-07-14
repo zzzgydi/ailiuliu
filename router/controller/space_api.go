@@ -130,6 +130,7 @@ func UpdateSpaceData(c *gin.Context) {
 
 	var req struct {
 		SpaceId int                `json:"space_id,omitempty"`
+		Meta    json.RawMessage    `json:"meta,omitempty"`
 		Nodes   []*model.SpaceNode `json:"nodes,omitempty"`
 	}
 	if err := c.BindJSON(&req); err != nil {
@@ -142,7 +143,7 @@ func UpdateSpaceData(c *gin.Context) {
 		return
 	}
 
-	if err := space.UpdateSpaceData(userId, req.SpaceId, req.Nodes); err != nil {
+	if err := space.UpdateSpaceData(userId, req.SpaceId, req.Meta, req.Nodes); err != nil {
 		ReturnServerError(c, err)
 		return
 	}
