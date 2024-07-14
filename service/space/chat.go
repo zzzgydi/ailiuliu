@@ -109,7 +109,13 @@ func SpaceChat(c *gin.Context, userId string, spaceId, nodeId int, query string,
 			"content": delta,
 		}
 		retData, err := json.Marshal(ret)
-		if err == nil && c.Request.Context().Err() != nil {
+		if err != nil {
+			slog.Error("marshal chat message failed", "err", err)
+			continue
+		}
+		// check if client is still connected
+		err = c.Request.Context().Err()
+		if err == nil {
 			retBytes := append([]byte("data: "), retData...)
 			retBytes = append(retBytes, []byte("\n\n")...)
 			c.Writer.Write(retBytes)

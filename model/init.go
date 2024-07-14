@@ -15,6 +15,7 @@ func initModel() error {
 			&Space{},
 			&SpaceNode{},
 			&ModelProvider{},
+			&ChatMessage{},
 		)
 	} else {
 		slog.Info("skip auto migrate")
