@@ -6,8 +6,10 @@ import { NodeProps, NodeResizer, useStoreApi } from "reactflow";
 import { cn } from "@/utils/ui";
 import { ChatInput } from "./chat-input";
 import { MarkdownContent } from "./markdown";
-import { baseURL } from "@/services/base";
+import { baseURL, fetchStream } from "@/services/base";
 import { ModelIcon } from "./model-icon";
+import { useParams } from "react-router-dom";
+import { toast } from "../ui/use-toast";
 
 const controlStyle = {
   background: "transparent",
@@ -23,53 +25,114 @@ interface INodeData {
 }
 
 export function ChatNode(props: NodeProps<INodeData>) {
+  const {
+    id: nodeId,
+    data: { model },
+  } = props;
+  const { id: spaceIdStr } = useParams<{ id: string }>();
+
   const storeApi = useStoreApi();
 
   const [items, setItems] = useState<
-    { id: string; role: string; content: string }[]
+    { id: number; role: string; content: string }[]
   >([]);
 
   const handleChat = async (query: string) => {
     query = query.trim();
     if (!query) return;
 
-    const openai = new OpenAI({
-      baseURL: `${baseURL}/api/v1`,
-      apiKey: "sk-123123123123123123123123123123",
-      dangerouslyAllowBrowser: true,
-      maxRetries: 1,
-    });
+    const now = Date.now();
+    setItems((l) => [...l, { id: now, role: "user", content: query }]);
 
-    const messages = [
-      ...items.map(({ id, ...r }) => r),
-      { role: "user", content: query },
-    ] as any;
+    try {
+      const node_id = nodeId ? parseInt(nodeId) : null;
+      const space_id = spaceIdStr ? parseInt(spaceIdStr) : null;
 
-    setItems((l) => [...l, { id: uuid(), role: "user", content: query }]);
+      const stream = await fetchStream("/api/space/chat", {
+        method: "POST",
+        body: { space_id, node_id, query, setting: { model: model?.value } },
+      });
+      const reader = stream.body
+        ?.pipeThrough(new TextDecoderStream())
+        .getReader();
+      if (!reader) throw new Error("No reader");
 
-    const stream = await openai.chat.completions.create({
-      model: props.data.model?.value || "gpt-3.5-turbo",
-      messages,
-      stream: true,
-    });
-    const id = uuid();
-    for await (const chunk of stream) {
-      setItems((i) =>
-        produce(i, (draft) => {
-          const cur = draft.find((m) => m.id === id);
-          if (cur) {
-            cur.content += chunk.choices[0]?.delta?.content || "";
-          } else {
-            draft.push({
-              id,
-              role: "assistant",
-              content: chunk.choices[0]?.delta?.content || "",
-            });
+      const id = now + 1;
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        if (!value.startsWith("data: ")) continue;
+        const newValue = value.slice(6);
+        for (const line of newValue.split("\n\ndata: ")) {
+          const data = JSON.parse(line) as any;
+          if (data.type === "chat") {
+            setItems((i) =>
+              produce(i, (draft) => {
+                const cur = draft.find((m) => m.id === id);
+                if (cur) {
+                  cur.content += data?.content || "";
+                } else {
+                  draft.push({
+                    id,
+                    role: "assistant",
+                    content: data?.content || "",
+                  });
+                }
+              })
+            );
           }
-        })
-      );
+        }
+      }
+    } catch (e: any) {
+      console.error(e);
+      toast({
+        title: "Error",
+        description: e.message || "Failed to send message",
+      });
     }
   };
+
+  // const handleChat = async (query: string) => {
+  //   query = query.trim();
+  //   if (!query) return;
+
+  //   const openai = new OpenAI({
+  //     baseURL: `${baseURL}/api/v1`,
+  //     apiKey: "sk-123123123123123123123123123123",
+  //     dangerouslyAllowBrowser: true,
+  //     maxRetries: 1,
+  //   });
+
+  //   const messages = [
+  //     ...items.map(({ id, ...r }) => r),
+  //     { role: "user", content: query },
+  //   ] as any;
+
+  //   setItems((l) => [...l, { id: uuid(), role: "user", content: query }]);
+
+  //   const stream = await openai.chat.completions.create({
+  //     model: props.data.model?.value || "gpt-3.5-turbo",
+  //     messages,
+  //     stream: true,
+  //   });
+  //   const id = uuid();
+  //   for await (const chunk of stream) {
+  //     setItems((i) =>
+  //       produce(i, (draft) => {
+  //         const cur = draft.find((m) => m.id === id);
+  //         if (cur) {
+  //           cur.content += chunk.choices[0]?.delta?.content || "";
+  //         } else {
+  //           draft.push({
+  //             id,
+  //             role: "assistant",
+  //             content: chunk.choices[0]?.delta?.content || "",
+  //           });
+  //         }
+  //       })
+  //     );
+  //   }
+  // };
 
   return (
     <>
