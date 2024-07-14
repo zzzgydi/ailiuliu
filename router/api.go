@@ -12,13 +12,12 @@ func APIRouter(r *gin.Engine) {
 	api.Use(middleware.LoggerMiddleware, middleware.AuthMiddleware())
 
 	api.GET("/model/list", controller.GetModelList)
-}
 
-func AdminAPIRouter(r *gin.Engine) {
-	admin := r.Group("/api/admin")
-
-	admin.Use(middleware.LoggerMiddleware, middleware.AuthMiddleware(), middleware.AdminMiddleware())
-
-	admin.GET("/model/list", controller.AdminGetAllModelProvider)
-	admin.POST("/model/create", controller.AdminPostModelProvider)
+	api.GET("/space/list", controller.ListUserSpace)
+	api.GET("/space/detail", controller.DetailSpace)
+	api.POST("/space/create", controller.CreateSpace)
+	api.POST("/space/delete", controller.DeleteSpace)
+	api.POST("/space/update_name", controller.UpdateSpaceName)
+	api.POST("/space/update_data", controller.UpdateSpaceData)
+	api.POST("/space/create_node", controller.CreateSpaceNode)
 }
