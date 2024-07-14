@@ -3,6 +3,7 @@ import { SWRConfig } from "swr/_internal";
 import { BrowserRouter, useNavigate, useRoutes } from "react-router-dom";
 import { ClerkProvider, useAuth } from "@clerk/clerk-react";
 import { createFetcher } from "@/services/base";
+import { Toaster } from "@/components/ui/toaster";
 import ReactDOM from "react-dom/client";
 import routes from "~react-pages";
 import "@/assets/global.css";
@@ -47,5 +48,6 @@ function App() {
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <BrowserRouter basename="/">
     <App />
+    <Toaster />
   </BrowserRouter>
 );
