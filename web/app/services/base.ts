@@ -8,7 +8,10 @@ interface FetchOptions {
   body?: any;
 }
 
-export const fetcher = async (url: string, opt?: FetchOptions) => {
+export async function fetcher<T = any>(
+  url: string,
+  opt?: FetchOptions
+): Promise<T> {
   const token = await _getToken?.();
   const headers: any = {};
   if (token) {
@@ -30,7 +33,7 @@ export const fetcher = async (url: string, opt?: FetchOptions) => {
     throw new Error(result.msg);
   }
   return result.data;
-};
+}
 
 export const createFetcher = (getToken: () => Promise<string | null>) => {
   _getToken = getToken;
