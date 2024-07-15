@@ -1,10 +1,9 @@
-import { ReactFlowProvider } from "reactflow";
-import { MainFlow } from "@/components/nodes/main-flow";
-import { SpaceList } from "@/components/space/space-list";
-import "reactflow/dist/style.css";
-import { Link } from "react-router-dom";
-import { SpaceBoard } from "./space-board";
 import { Suspense } from "react";
+import { ReactFlowProvider } from "reactflow";
+import { Link } from "react-router-dom";
+import { SpaceList } from "@/components/space/space-list";
+import { SpaceBoard } from "@/components/space//space-board";
+import "reactflow/dist/style.css";
 
 interface Props {
   spaceId?: number;
