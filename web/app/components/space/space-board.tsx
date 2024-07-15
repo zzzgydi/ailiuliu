@@ -10,11 +10,11 @@ import ReactFlow, {
   useReactFlow,
 } from "reactflow";
 import type { Node, OnNodesChange } from "reactflow";
-import { nodeTypes } from "@/components/nodes";
-import { CtxMenu } from "../nodes/ctx-menu";
 import { useLockFn, useUnmount } from "ahooks";
+import { nodeTypes } from "@/components/nodes";
+import { CtxMenu } from "@/components/nodes/ctx-menu";
+import { toast } from "@/components/ui/use-toast";
 import { fetcher } from "@/services/base";
-import { toast } from "../ui/use-toast";
 
 interface Props {
   spaceId: number;
