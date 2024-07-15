@@ -140,6 +140,18 @@ export const SpaceBoard = (props: Props) => {
       }
     }
     onNodesChange(e);
+
+    // change z-index
+    for (const change of e) {
+      if (change.type === "position") {
+        setNodes((nds) => {
+          const cur = nds.find((n) => n.id === change.id);
+          if (!cur) return nds;
+          const filtered = nds.filter((n) => n.id !== change.id);
+          return [...filtered, cur];
+        });
+      }
+    }
   };
 
   return (
