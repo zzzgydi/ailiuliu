@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { produce } from "immer";
-import { NodeProps, NodeResizer, useStoreApi } from "reactflow";
+import {
+  Handle,
+  NodeProps,
+  NodeResizer,
+  Position,
+  useStoreApi,
+} from "reactflow";
 import { cn } from "@/utils/ui";
 import { ChatInput } from "./chat-input";
 import { MarkdownContent } from "./markdown";
@@ -13,6 +19,12 @@ import useSWRImmutable from "swr/immutable";
 const controlStyle = {
   background: "transparent",
   border: "none",
+};
+const handleStyle = {
+  background: "#502eb0",
+  width: 12,
+  height: 6,
+  borderRadius: 6,
 };
 
 interface INodeData {
@@ -27,6 +39,7 @@ export function ChatNode(props: NodeProps<INodeData>) {
   const {
     id: nodeId,
     data: { model },
+    selected,
   } = props;
   const { id: spaceIdStr } = useParams<{ id: string }>();
 
@@ -146,6 +159,7 @@ export function ChatNode(props: NodeProps<INodeData>) {
 
   return (
     <>
+      <Handle type="target" position={Position.Top} style={handleStyle} />
       <NodeResizer
         color="transparent"
         handleStyle={controlStyle}
@@ -214,6 +228,11 @@ export function ChatNode(props: NodeProps<INodeData>) {
           />
         </div>
       </div>
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        style={{ ...handleStyle }}
+      />
     </>
   );
 }
