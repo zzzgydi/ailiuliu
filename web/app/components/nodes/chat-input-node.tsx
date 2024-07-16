@@ -2,6 +2,7 @@ import { Handle, NodeProps, NodeResizer, Position } from "reactflow";
 import { cn } from "@/utils/ui";
 import { Button } from "../ui/button";
 import { Forward } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 interface INodeData {}
 
@@ -17,21 +18,46 @@ const controlStyle = {
 };
 
 export const ChatInputNode = (props: NodeProps<INodeData>) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState("auto");
+
+  useEffect(() => {
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        if (entry.target === containerRef.current) {
+          setHeight(`${entry.contentRect.height}px`);
+        }
+      }
+    });
+
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
+
+    return () => {
+      if (containerRef.current) {
+        resizeObserver.unobserve(containerRef.current);
+      }
+    };
+  }, []);
+
   return (
     <>
       <NodeResizer
         color="transparent"
         handleStyle={controlStyle}
         isVisible={props.selected}
-        // minWidth={200}
-        // minHeight={70}
+        minWidth={200}
+        minHeight={70}
       />
       <Handle
+        id="a"
         type="source"
         position={Position.Top}
         style={{ ...handleStyle }}
       />
       <Handle
+        id="b"
         type="source"
         position={Position.Bottom}
         style={{ ...handleStyle }}
@@ -46,10 +72,11 @@ export const ChatInputNode = (props: NodeProps<INodeData>) => {
         <div className="w-full h-full pr-2 overflow-y-auto">
           <div
             className={cn(
-              "relative py-3 pl-3 pr-3 border-solid border border-muted rounded-lg",
+              "h-full relative py-3 pl-3 pr-3 border-solid border border-muted rounded-lg",
               "bg-muted flex gap-2 items-end"
               // focus && "ring-2 ring-muted-foreground dark:ring-muted-foreground"
             )}
+            ref={containerRef}
           >
             <textarea
               autoCapitalize="off"
@@ -62,7 +89,7 @@ export const ChatInputNode = (props: NodeProps<INodeData>) => {
                 "dark:text-white/90 dark:placeholder:text-white/60 dark:caret-white/90",
                 "w-full h-auto input-scrollbar"
               )}
-              style={{ lineHeight: "24px" }}
+              style={{ height, lineHeight: "24px" }}
               // value={value}
               // onChange={handleChange}
               onKeyDown={(e) => {
