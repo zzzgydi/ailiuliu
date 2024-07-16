@@ -165,9 +165,9 @@ export function ChatNode(props: NodeProps<INodeData>) {
       />
       <div
         className={cn(
-          "border w-full bg-white h-full rounded-lg flex flex-col min-w-[200px] min-h-[200px]",
+          "border w-full bg-background h-full rounded-lg flex flex-col min-w-[200px] min-h-[200px]",
           props.selected &&
-            "ring-2 ring-muted-foreground dark:ring-muted-foreground"
+            "border-transparent ring-2 ring-muted-foreground dark:ring-muted-foreground"
         )}
       >
         <div className="flex items-center p-2">

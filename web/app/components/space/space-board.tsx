@@ -53,30 +53,37 @@ export const SpaceBoard = (props: Props) => {
     null
   );
 
-  const handleCreateNode = useLockFn(async (model: any) => {
-    if (!position) return;
+  const handleCreateNode = useLockFn(
+    async (value: { type: string; data: any }) => {
+      if (!position) return;
 
-    const newNode: Partial<Node> = {
-      type: "chat",
-      position: project(position),
-      data: { model },
-      style: { width: 500, height: 600 },
-    };
+      const style = {
+        chat: { width: 500, height: 600 },
+        chatinput: { width: 400 },
+      }[value.type];
 
-    try {
-      const result = await fetcher<ISpaceNode>("/api/space/create_node", {
-        method: "POST",
-        body: { space_id: spaceId, data: newNode },
-      });
-      newNode.id = result.id.toString();
-      setNodes((nds) => [...nds, newNode as any]);
-    } catch (err: any) {
-      console.error(err);
-      toast({ title: "Error", description: "Failed to create node" });
-    } finally {
-      setPosition(null);
+      const newNode: Partial<Node> = {
+        type: value.type,
+        position: project(position),
+        data: value.type === "chat" ? { model: value.data } : {},
+        style,
+      };
+
+      try {
+        const result = await fetcher<ISpaceNode>("/api/space/create_node", {
+          method: "POST",
+          body: { space_id: spaceId, data: newNode },
+        });
+        newNode.id = result.id.toString();
+        setNodes((nds) => [...nds, newNode as any]);
+      } catch (err: any) {
+        console.error(err);
+        toast({ title: "Error", description: "Failed to create node" });
+      } finally {
+        setPosition(null);
+      }
     }
-  });
+  );
 
   const handleSave = useLockFn(async () => {
     try {
