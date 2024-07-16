@@ -4,13 +4,14 @@ import { ModelIcon } from "./model-icon";
 
 interface Props {
   position: { x: number; y: number };
-  onAdd?: (model: IModel) => void;
+  onAdd?: (model: IModelProvider) => void;
 }
 
 export const CtxMenu = (props: Props) => {
   const { position, onAdd } = props;
 
-  const { data, isLoading } = useSWRImmutable<IModel[]>("/api/model/list");
+  const { data, isLoading } =
+    useSWRImmutable<IModelProvider[]>("/api/model/list");
 
   return (
     <div
@@ -24,7 +25,7 @@ export const CtxMenu = (props: Props) => {
     >
       {data?.map((m) => (
         <div
-          key={m.value}
+          key={m.id}
           className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none 
             hover:bg-accent hover:text-accent-foreground
             focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"

@@ -1,9 +1,3 @@
-interface IModel {
-  label: string;
-  provider: string;
-  value: string;
-}
-
 interface IModelProvider {
   id: number;
   label: string;

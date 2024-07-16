@@ -9,7 +9,7 @@ import { Cohere } from "@lobehub/icons";
 import { Meta } from "@lobehub/icons";
 
 interface Props {
-  model?: IModel;
+  model?: IModelProvider;
   className?: string;
 }
 
