@@ -28,11 +28,7 @@ const handleStyle = {
 };
 
 interface INodeData {
-  model?: {
-    label: string;
-    provider: string;
-    value: string;
-  };
+  model?: IModelProvider;
 }
 
 export function ChatNode(props: NodeProps<INodeData>) {
