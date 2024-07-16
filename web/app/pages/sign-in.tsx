@@ -1,10 +1,8 @@
 import { SignIn } from "@clerk/clerk-react";
-// import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
 
 export default function SignInPage() {
   return (
-    <div>
-      <h1>Sign In route</h1>
+    <div className="min-h-dvh flex items-center justify-center">
       <SignIn />
     </div>
   );

@@ -22,7 +22,7 @@ function Auth() {
 
   return (
     <SWRConfig value={{ fetcher }}>
-      <Suspense fallback={<p>Loading...</p>}>{useRoutes(routes)}</Suspense>
+      <Suspense fallback={<div />}>{useRoutes(routes)}</Suspense>
     </SWRConfig>
   );
 }

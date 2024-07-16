@@ -2,8 +2,7 @@ import { SignUp } from "@clerk/clerk-react";
 
 export default function SignUpPage() {
   return (
-    <div>
-      <h1>Sign Up route</h1>
+    <div className="min-h-dvh flex items-center justify-center">
       <SignUp />
     </div>
   );
