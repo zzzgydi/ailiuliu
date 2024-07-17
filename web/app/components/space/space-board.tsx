@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import ReactFlow, {
   Background,
   Controls,
+  MarkerType,
   MiniMap,
   addEdge,
   useEdgesState,
@@ -44,7 +45,25 @@ export const SpaceBoard = (props: Props) => {
   const { project, getNodes, getViewport } = useReactFlow();
 
   const onConnect = useCallback(
-    (connection: any) => setEdges((eds) => addEdge(connection, eds)),
+    (connection: any) => {
+      console.log(connection);
+      setEdges((eds) =>
+        addEdge(
+          {
+            ...connection,
+            markerEnd: {
+              type: MarkerType.ArrowClosed,
+              width: 10,
+              height: 10,
+              color: "#FF0072",
+            },
+            animated: true,
+            // style: { strokeWidth: 2, stroke: "#FF0072" },
+          },
+          eds
+        )
+      );
+    },
     [setEdges]
   );
 

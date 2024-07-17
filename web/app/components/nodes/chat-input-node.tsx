@@ -10,7 +10,7 @@ const handleStyle = {
   background: "#502eb0",
   width: 12,
   height: 6,
-  borderRadius: 6,
+  borderRadius: "3px 3px 0 0",
 };
 const controlStyle = {
   background: "transparent",
@@ -51,15 +51,8 @@ export const ChatInputNode = (props: NodeProps<INodeData>) => {
         minHeight={70}
       />
       <Handle
-        id="a"
         type="source"
         position={Position.Top}
-        style={{ ...handleStyle }}
-      />
-      <Handle
-        id="b"
-        type="source"
-        position={Position.Bottom}
         style={{ ...handleStyle }}
       />
       <div

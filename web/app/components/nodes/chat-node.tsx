@@ -21,10 +21,10 @@ const controlStyle = {
   border: "none",
 };
 const handleStyle = {
-  background: "#502eb0",
+  background: "#d97706",
   width: 12,
   height: 6,
-  borderRadius: 6,
+  borderRadius: "0 0 3px 3px",
 };
 
 interface INodeData {
@@ -155,7 +155,12 @@ export function ChatNode(props: NodeProps<INodeData>) {
 
   return (
     <>
-      <Handle type="target" position={Position.Top} style={handleStyle} />
+      <Handle
+        id="b"
+        type="target"
+        position={Position.Bottom}
+        style={handleStyle}
+      />
       <NodeResizer
         color="transparent"
         handleStyle={controlStyle}
@@ -224,11 +229,6 @@ export function ChatNode(props: NodeProps<INodeData>) {
           />
         </div>
       </div>
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        style={{ ...handleStyle }}
-      />
     </>
   );
 }
