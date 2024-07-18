@@ -49,7 +49,7 @@ export const CreateModelForm = (props: Props) => {
     try {
       await fetcher("/api/admin/model/create", {
         method: "POST",
-        body: data,
+        body: { ...data, level: Number(data.level || 0) },
       });
       form.reset();
       toast({
@@ -146,7 +146,12 @@ export const CreateModelForm = (props: Props) => {
                 <FormItem>
                   <FormLabel>Level</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="0" {...field} />
+                    <Input
+                      type="number"
+                      placeholder="0"
+                      {...field}
+                      onChange={(e) => field.onChange(Number(e.target.value))}
+                    />
                   </FormControl>
                   <FormDescription>The level of this model.</FormDescription>
                   <FormMessage />
