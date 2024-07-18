@@ -1,8 +1,8 @@
-import { Suspense, useMemo } from "react";
+import { Suspense } from "react";
 import { SWRConfig } from "swr/_internal";
 import { BrowserRouter, useNavigate, useRoutes } from "react-router-dom";
 import { ClerkProvider, useAuth } from "@clerk/clerk-react";
-import { createFetcher } from "@/services/base";
+import { fetcher, setGetToken } from "@/services/base";
 import { Toaster } from "@/components/ui/toaster";
 import ReactDOM from "react-dom/client";
 import routes from "~react-pages";
@@ -17,8 +17,7 @@ if (!PUBLISHABLE_KEY) {
 
 function Auth() {
   const { getToken } = useAuth();
-
-  const fetcher = useMemo(() => createFetcher(getToken), [getToken]);
+  setGetToken(getToken);
 
   return (
     <SWRConfig value={{ fetcher }}>

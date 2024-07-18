@@ -28,6 +28,9 @@ export async function fetcher<T = any>(
     credentials: "include",
     body: opt?.body ? JSON.stringify(opt?.body) : undefined,
   });
+  if (res.status !== 200) {
+    throw new Error(res.statusText);
+  }
   const result = await res.json();
   if (result.code !== 0) {
     throw new Error(result.msg);
@@ -64,7 +67,6 @@ export async function fetchStream<T = any>(url: string, opt?: FetchOptions) {
   return stream;
 }
 
-export const createFetcher = (getToken: () => Promise<string | null>) => {
+export const setGetToken = (getToken: () => Promise<string | null>) => {
   _getToken = getToken;
-  return fetcher;
 };
