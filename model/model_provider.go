@@ -30,6 +30,23 @@ func CreateModelProvider(mp *ModelProvider) error {
 	return nil
 }
 
+func UpdateModelProvider(mp *ModelProvider) error {
+	mp.UpdatedAt = time.Now()
+	err := common.MDB.Save(mp).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func DeleteModelProvider(id int) error {
+	err := common.MDB.Where("id = ?", id).Delete(&ModelProvider{}).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func GetModelProviderList() ([]*ModelProvider, error) {
 	var modelProvider []*ModelProvider
 	err := common.MDB.Find(&modelProvider).Error

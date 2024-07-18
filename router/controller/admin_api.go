@@ -16,7 +16,7 @@ func AdminGetAllModelProvider(c *gin.Context) {
 	ReturnSuccess(c, models)
 }
 
-func AdminPostModelProvider(c *gin.Context) {
+func AdminCreateModelProvider(c *gin.Context) {
 	req := &CreateModelProviderRequest{}
 	if err := c.ShouldBindJSON(req); err != nil {
 		ReturnBadRequest(c, err)
@@ -37,4 +37,45 @@ func AdminPostModelProvider(c *gin.Context) {
 	}
 
 	ReturnSuccess(c, mp)
+}
+
+func AdminUpdateModelProvider(c *gin.Context) {
+	req := &UpdateModelProviderRequest{}
+	if err := c.ShouldBindJSON(req); err != nil {
+		ReturnBadRequest(c, err)
+		return
+	}
+
+	mp := &model.ModelProvider{
+		Id:       req.Id,
+		Label:    req.Label,
+		Provider: req.Provider,
+		Value:    req.Value,
+		Level:    req.Level,
+	}
+
+	mp, err := admin.UpdateModelProvider(mp)
+	if err != nil {
+		ReturnServerError(c, err)
+		return
+	}
+
+	ReturnSuccess(c, mp)
+}
+
+func AdminDeleteModelProvider(c *gin.Context) {
+	var req struct {
+		Id int `json:"id" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(req); err != nil {
+		ReturnBadRequest(c, err)
+		return
+	}
+
+	if err := admin.DeleteModelProvider(req.Id); err != nil {
+		ReturnServerError(c, err)
+		return
+	}
+
+	ReturnSuccess(c, nil)
 }

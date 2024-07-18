@@ -12,5 +12,7 @@ func AdminAPIRouter(r *gin.Engine) {
 	admin.Use(middleware.LoggerMiddleware, middleware.AuthMiddleware(), middleware.AdminMiddleware())
 
 	admin.GET("/model/list", controller.AdminGetAllModelProvider)
-	admin.POST("/model/create", controller.AdminPostModelProvider)
+	admin.POST("/model/create", controller.AdminCreateModelProvider)
+	admin.POST("/model/update", controller.AdminUpdateModelProvider)
+	admin.POST("/model/delete", controller.AdminDeleteModelProvider)
 }
