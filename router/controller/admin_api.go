@@ -64,9 +64,9 @@ func AdminUpdateModelProvider(c *gin.Context) {
 }
 
 func AdminDeleteModelProvider(c *gin.Context) {
-	var req struct {
+	req := &struct {
 		Id int `json:"id" binding:"required"`
-	}
+	}{}
 	if err := c.ShouldBindJSON(req); err != nil {
 		ReturnBadRequest(c, err)
 		return
