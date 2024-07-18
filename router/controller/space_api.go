@@ -66,16 +66,13 @@ func DetailSpace(c *gin.Context) {
 		return
 	}
 
-	space, nodes, err := space.DetailSpace(userId, spaceId)
+	detail, err := space.DetailSpace(userId, spaceId)
 	if err != nil {
 		ReturnServerError(c, err)
 		return
 	}
 
-	ReturnSuccess(c, gin.H{
-		"space": space,
-		"nodes": nodes,
-	})
+	ReturnSuccess(c, detail)
 }
 
 func DeleteSpace(c *gin.Context) {

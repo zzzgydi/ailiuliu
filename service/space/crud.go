@@ -15,18 +15,22 @@ func CreateSpace(userId string, name string) (*model.Space, error) {
 	return model.CreateSpace(userId, name)
 }
 
-func DetailSpace(userId string, spaceId int) (*model.Space, []*model.SpaceNode, error) {
+func DetailSpace(userId string, spaceId int) (*DetailSpaceData, error) {
 	space, err := model.GetSpaceById(userId, spaceId)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	nodes, err := model.GetSpaceNodeList(spaceId)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
-	return space, nodes, nil
+	return &DetailSpaceData{
+		Id:    spaceId,
+		Space: space,
+		Nodes: nodes,
+	}, nil
 }
 
 func DeleteSpace(userId string, spaceId int) error {
@@ -47,12 +51,7 @@ func UpdateSpaceData(userId string, spaceId int, meta []byte, nodes []*model.Spa
 		return err
 	}
 
-	// update space meta
-	if err := model.UpdateSpaceMeta(userId, spaceId, meta); err != nil {
-		return err
-	}
-
-	return model.BatchUpdateSpaceNode(spaceId, nodes)
+	return model.UpdateSpaceData(userId, spaceId, meta, nodes)
 }
 
 // space node
