@@ -25,7 +25,7 @@ export async function fetcher<T = any>(
       ...headers,
       ...opt?.headers,
     },
-    credentials: "include",
+    // credentials: "include",
     body: opt?.body ? JSON.stringify(opt?.body) : undefined,
   });
   if (res.status !== 200) {
@@ -52,7 +52,7 @@ export async function fetchStream<T = any>(url: string, opt?: FetchOptions) {
       ...headers,
       ...opt?.headers,
     },
-    credentials: "include",
+    // credentials: "include",
     body: opt?.body ? JSON.stringify(opt?.body) : undefined,
   });
 
