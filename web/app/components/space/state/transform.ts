@@ -1,7 +1,5 @@
-import { toast } from "@/components/ui/use-toast";
-import { fetcher } from "@/services/base";
-import type { Edge, OnNodesChange } from "reactflow";
-import { applyNodeChanges, MarkerType } from "reactflow";
+import { MarkerType } from "reactflow";
+import type { Edge } from "reactflow";
 import { useBoardStore } from "./base";
 
 type PartialEdge = Partial<Edge> & { source: string; target: string };
@@ -21,4 +19,17 @@ export const parseEdge = (edge: PartialEdge): Edge => {
     style: { strokeWidth: 2, stroke: "#FF0072" },
     animated: true,
   };
+};
+
+export const initBoardData = (spaceId: number, detail: ISpaceDetail) => {
+  useBoardStore.setState({
+    spaceId,
+    detail,
+    position: null,
+    nodes: detail.nodes.map((n) => ({
+      ...n.data,
+      id: n.id.toString(),
+    })),
+    edges: (detail.space.meta?.edges || []).map(parseEdge),
+  });
 };

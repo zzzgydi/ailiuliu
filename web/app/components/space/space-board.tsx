@@ -3,7 +3,8 @@ import { useEffect, useRef } from "react";
 import { useUnmount } from "ahooks";
 import { ReactFlow, Background, Controls, MiniMap } from "reactflow";
 import { nodeTypes } from "@/components/nodes";
-import { initBoardData, useBoardStore } from "./state/base";
+import { useBoardStore } from "./state/base";
+import { initBoardData } from "./state/transform";
 import { useHandler } from "./state/use-handler";
 import { CtxMenu } from "./ctx-menu";
 
