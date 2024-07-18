@@ -26,6 +26,10 @@ interface ISpaceMeta {
     y: number;
     zoom: number;
   };
+  edges?: (Partial<import("reactflow").Edge> & {
+    source: string;
+    target: string;
+  })[];
 }
 
 interface ISpaceNode {

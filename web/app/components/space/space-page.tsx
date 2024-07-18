@@ -65,17 +65,17 @@ export const SpacePage = (props: Props) => {
       <div className="flex-auto h-full w-full">
         <div className="w-full h-full bg-muted rounded-md overflow-hidden p-1">
           {spaceId ? (
-            <ReactFlowProvider key={`space-${spaceId}`}>
-              <Suspense
-                fallback={
-                  <div className="flex items-center justify-center h-full">
-                    Loading...
-                  </div>
-                }
-              >
+            <Suspense
+              fallback={
+                <div className="flex items-center justify-center h-full">
+                  Loading...
+                </div>
+              }
+            >
+              <ReactFlowProvider key={`space-${spaceId}`}>
                 <SpaceBoard spaceId={spaceId} />
-              </Suspense>
-            </ReactFlowProvider>
+              </ReactFlowProvider>
+            </Suspense>
           ) : (
             <div className="flex items-center justify-center h-full text-lg text-gray-400">
               Select a space
