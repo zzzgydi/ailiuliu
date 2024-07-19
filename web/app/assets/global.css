@@ -127,3 +127,13 @@
     transform: rotate(360deg);
   }
 }
+
+.react-flow__edge path {
+  stroke-width: 2px;
+  stroke: #ff0072;
+}
+
+.react-flow__edge.selected path {
+  stroke-width: 2px;
+  stroke: #b91c1c !important;
+}

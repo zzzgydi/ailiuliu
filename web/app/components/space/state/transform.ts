@@ -16,7 +16,7 @@ export const parseEdge = (edge: PartialEdge): Edge => {
       height: 10,
       color: "#FF0072",
     },
-    style: { strokeWidth: 2, stroke: "#FF0072" },
+    // style: { strokeWidth: 2, stroke: "#FF0072" },
     animated: true,
   };
 };
