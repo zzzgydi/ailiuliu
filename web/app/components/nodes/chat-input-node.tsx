@@ -3,6 +3,8 @@ import { cn } from "@/utils/ui";
 import { Button } from "../ui/button";
 import { Forward } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useBoardStore } from "../space/state/base";
+import { eventBus } from "../space/state/event";
 
 interface INodeData {}
 
@@ -20,6 +22,7 @@ const controlStyle = {
 export const ChatInputNode = (props: NodeProps<INodeData>) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState("auto");
+  const [value, setValue] = useState("");
 
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {
@@ -40,6 +43,22 @@ export const ChatInputNode = (props: NodeProps<INodeData>) => {
       }
     };
   }, []);
+
+  const handleSend = async () => {
+    if (!value.trim()) return;
+    const { edges } = useBoardStore.getState();
+
+    const targetNodes = [
+      ...new Set(
+        edges.filter((e) => e.source === props.id).map((e) => e.target)
+      ),
+    ].filter(Boolean);
+
+    targetNodes.forEach((id) => {
+      eventBus.emit(`chat:send:${id}`, { query: value.trim() });
+    });
+    setValue("");
+  };
 
   return (
     <>
@@ -83,8 +102,8 @@ export const ChatInputNode = (props: NodeProps<INodeData>) => {
                 "w-full h-auto input-scrollbar"
               )}
               style={{ height, lineHeight: "24px" }}
-              // value={value}
-              // onChange={handleChange}
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
               onKeyDown={(e) => {
                 // https://www.zhangxinxu.com/wordpress/2023/02/js-enter-submit-compositionupdate/
                 // https://developer.mozilla.org/zh-CN/docs/Web/API/KeyboardEvent/isComposing
@@ -95,6 +114,7 @@ export const ChatInputNode = (props: NodeProps<INodeData>) => {
                 ) {
                   e.preventDefault();
                   // onEnter?.((e.target as any).value);
+                  handleSend();
                 }
               }}
             />
@@ -106,7 +126,7 @@ export const ChatInputNode = (props: NodeProps<INodeData>) => {
                 <Button
                   variant="ghost"
                   className="w-6 h-6 p-0"
-                  // onClick={handleSend}
+                  onClick={handleSend}
                   aria-label="Send"
                 >
                   <Forward className="text-muted-foreground" />

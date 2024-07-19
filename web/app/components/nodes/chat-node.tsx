@@ -1,3 +1,4 @@
+import useSWR from "swr";
 import { useEffect, useState } from "react";
 import { produce } from "immer";
 import {
@@ -14,7 +15,7 @@ import { fetchStream } from "@/services/base";
 import { ModelIcon } from "./model-icon";
 import { useParams } from "react-router-dom";
 import { toast } from "../ui/use-toast";
-import useSWRImmutable from "swr/immutable";
+import { eventBus } from "../space/state/event";
 
 const controlStyle = {
   background: "transparent",
@@ -39,8 +40,9 @@ export function ChatNode(props: NodeProps<INodeData>) {
   } = props;
   const { id: spaceIdStr } = useParams<{ id: string }>();
 
-  const { data: chatHistory } = useSWRImmutable<IChatMessage[]>(
-    `/api/space/chat_history?space_id=${spaceIdStr}&node_id=${nodeId}`
+  const { data: chatHistory, mutate } = useSWR<IChatMessage[]>(
+    `/api/space/chat_history?space_id=${spaceIdStr}&node_id=${nodeId}`,
+    { revalidateOnFocus: false }
   );
 
   const storeApi = useStoreApi();
@@ -48,6 +50,8 @@ export function ChatNode(props: NodeProps<INodeData>) {
   const [items, setItems] = useState<
     { id: number; role: string; content: string }[]
   >([]);
+
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const ret = chatHistory?.slice();
@@ -59,6 +63,8 @@ export function ChatNode(props: NodeProps<INodeData>) {
   const handleChat = async (query: string) => {
     query = query.trim();
     if (!query) return;
+    if (loading) return;
+    setLoading(true);
 
     const now = Date.now();
     setItems((l) => [...l, { id: now, role: "user", content: query }]);
@@ -108,50 +114,22 @@ export function ChatNode(props: NodeProps<INodeData>) {
         title: "Error",
         description: e.message || "Failed to send message",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
-  // const handleChat = async (query: string) => {
-  //   query = query.trim();
-  //   if (!query) return;
+  useEffect(() => {
+    const handleEvent = (data: any) => {
+      handleChat(data.query);
+    };
 
-  //   const openai = new OpenAI({
-  //     baseURL: `${baseURL}/api/v1`,
-  //     apiKey: "sk-123123123123123123123123123123",
-  //     dangerouslyAllowBrowser: true,
-  //     maxRetries: 1,
-  //   });
+    eventBus.on(`chat:send:${nodeId}`, handleEvent);
 
-  //   const messages = [
-  //     ...items.map(({ id, ...r }) => r),
-  //     { role: "user", content: query },
-  //   ] as any;
-
-  //   setItems((l) => [...l, { id: uuid(), role: "user", content: query }]);
-
-  //   const stream = await openai.chat.completions.create({
-  //     model: props.data.model?.value || "gpt-3.5-turbo",
-  //     messages,
-  //     stream: true,
-  //   });
-  //   const id = uuid();
-  //   for await (const chunk of stream) {
-  //     setItems((i) =>
-  //       produce(i, (draft) => {
-  //         const cur = draft.find((m) => m.id === id);
-  //         if (cur) {
-  //           cur.content += chunk.choices[0]?.delta?.content || "";
-  //         } else {
-  //           draft.push({
-  //             id,
-  //             role: "assistant",
-  //             content: chunk.choices[0]?.delta?.content || "",
-  //           });
-  //         }
-  //       })
-  //     );
-  //   }
-  // };
+    return () => {
+      eventBus.removeListener(`chat:send:${nodeId}`, handleEvent);
+    };
+  }, [nodeId]);
 
   return (
     <>
@@ -222,6 +200,7 @@ export function ChatNode(props: NodeProps<INodeData>) {
         </div>
         <div className="nowheel nodrag flex-none p-2">
           <ChatInput
+            loading={loading}
             onSend={handleChat}
             onFocus={(f) => {
               if (f) storeApi.getState().addSelectedNodes([props.id]);

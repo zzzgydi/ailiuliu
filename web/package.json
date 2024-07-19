@@ -30,6 +30,7 @@
     "ahooks": "^3.8.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "eventemitter3": "^5.0.1",
     "hono": "^4.4.7",
     "immer": "^10.1.1",
     "isbot": "^4.1.0",
