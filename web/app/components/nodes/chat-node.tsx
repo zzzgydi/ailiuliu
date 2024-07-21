@@ -1,6 +1,7 @@
 import useSWR from "swr";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { produce } from "immer";
+import { useThrottleFn } from "ahooks";
 import {
   Handle,
   NodeProps,
@@ -58,6 +59,17 @@ export function ChatNode(props: NodeProps<INodeData>) {
     setItems(ret ?? []);
   }, [chatHistory]);
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const { run: handleStreamScroll } = useThrottleFn(
+    () => {
+      if (!scrollRef.current) return;
+      const top = scrollRef.current.scrollHeight;
+      scrollRef.current.scrollTo({ top, behavior: "smooth" });
+    },
+    { wait: 100, trailing: true, leading: true }
+  );
+
   const handleChat = async (query: string) => {
     query = query.trim();
     if (!query) return;
@@ -66,6 +78,7 @@ export function ChatNode(props: NodeProps<INodeData>) {
 
     const now = Date.now();
     setItems((l) => [...l, { id: now, role: "user", content: query }]);
+    setTimeout(() => handleStreamScroll(), 10);
 
     try {
       const node_id = nodeId ? parseInt(nodeId) : null;
@@ -103,6 +116,7 @@ export function ChatNode(props: NodeProps<INodeData>) {
                 }
               })
             );
+            handleStreamScroll();
           }
         }
       }
@@ -166,7 +180,10 @@ export function ChatNode(props: NodeProps<INodeData>) {
         </div>
         <div className="flex-auto overflow-hidden select-text">
           {items.length > 0 ? (
-            <div className="w-full h-full overflow-y-auto nowheel px-2">
+            <div
+              className="w-full h-full overflow-y-auto nowheel px-2"
+              ref={scrollRef}
+            >
               {items.map((item, index) => (
                 <div
                   key={item.id || index}
