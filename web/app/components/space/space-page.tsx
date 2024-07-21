@@ -26,7 +26,7 @@ export const SpacePage = (props: Props) => {
   return (
     <div className="w-screen h-screen flex overflow-hidden p-2 gap-2">
       <div className="flex-none w-[250px]">
-        <div className="w-full h-full bg-background rounded-md overflow-hidden flex flex-col">
+        <div className="w-full h-full rounded-md overflow-hidden flex flex-col">
           <Link to="/">
             <h1 className="p-1 text-lg font-medium flex-none mt-2 mb-4">
               AI Liu Liu ~

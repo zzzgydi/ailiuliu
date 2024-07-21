@@ -81,7 +81,7 @@ export const SpaceBoard = (props: Props) => {
       }}
     >
       <Background />
-      <MiniMap zoomable pannable />
+      <MiniMap zoomable pannable style={{ width: 120, height: 80 }} />
       <Controls />
 
       {nodes.length === 0 && (
