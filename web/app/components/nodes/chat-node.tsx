@@ -13,7 +13,6 @@ import { ChatInput } from "./chat-input";
 import { MarkdownContent } from "./markdown";
 import { fetchStream } from "@/services/base";
 import { ModelIcon } from "./model-icon";
-import { useParams } from "react-router-dom";
 import { toast } from "../ui/use-toast";
 import { eventBus } from "../space/state/event";
 
@@ -29,19 +28,18 @@ const handleStyle = {
 };
 
 interface INodeData {
+  spaceId: number;
   model?: IModelProvider;
 }
 
 export function ChatNode(props: NodeProps<INodeData>) {
   const {
     id: nodeId,
-    data: { model },
-    selected,
+    data: { model, spaceId },
   } = props;
-  const { id: spaceIdStr } = useParams<{ id: string }>();
 
-  const { data: chatHistory, mutate } = useSWR<IChatMessage[]>(
-    `/api/space/chat_history?space_id=${spaceIdStr}&node_id=${nodeId}`,
+  const { data: chatHistory } = useSWR<IChatMessage[]>(
+    `/api/space/chat_history?space_id=${spaceId}&node_id=${nodeId}`,
     { revalidateOnFocus: false }
   );
 
@@ -71,7 +69,7 @@ export function ChatNode(props: NodeProps<INodeData>) {
 
     try {
       const node_id = nodeId ? parseInt(nodeId) : null;
-      const space_id = spaceIdStr ? parseInt(spaceIdStr) : null;
+      const space_id = spaceId;
 
       const stream = await fetchStream("/api/space/chat", {
         method: "POST",

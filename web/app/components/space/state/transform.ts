@@ -28,6 +28,7 @@ export const initBoardData = (spaceId: number, detail: ISpaceDetail) => {
     position: null,
     nodes: detail.nodes.map((n) => ({
       ...n.data,
+      data: { ...n.data?.data, spaceId },
       id: n.id.toString(),
     })),
     edges: (detail.space.meta?.edges || []).map(parseEdge),

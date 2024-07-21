@@ -23,7 +23,8 @@ export const useHandler = () => {
       const newNode: Partial<Node> = {
         type: value.type,
         position: project(position),
-        data: value.type === "chat" ? { model: value.data } : {},
+        data:
+          value.type === "chat" ? { model: value.data, spaceId } : { spaceId },
         style,
       };
 
