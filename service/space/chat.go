@@ -14,15 +14,14 @@ import (
 )
 
 type LLMSetting struct {
-	Model        string   `json:"model"`
-	SystemPrompt string   `json:"system_prompt,omitempty"`
-	UseHistory   *bool    `json:"use_history,omitempty"`
-	MaxTokens    int      `json:"max_tokens,omitempty"`
-	Temperature  float32  `json:"temperature,omitempty"`
-	TopP         float32  `json:"top_p,omitempty"`
-	N            int      `json:"n,omitempty"`
-	Stream       bool     `json:"stream,omitempty"`
-	Stop         []string `json:"stop,omitempty"`
+	Model            string   `json:"model"`
+	SystemPrompt     string   `json:"system_prompt,omitempty"`
+	UseHistory       *bool    `json:"use_history,omitempty"`
+	MaxTokens        int      `json:"max_tokens,omitempty"`
+	Temperature      float32  `json:"temperature,omitempty"`
+	TopP             float32  `json:"top_p,omitempty"`
+	Stop             []string `json:"stop,omitempty"`
+	FrequencyPenalty float32  `json:"frequency_penalty,omitempty"`
 }
 
 func SpaceChat(c *gin.Context, userId string, spaceId, nodeId int, query string, setting *LLMSetting) error {
@@ -73,14 +72,14 @@ func SpaceChat(c *gin.Context, userId string, spaceId, nodeId int, query string,
 		openai.ChatCompletionMessage{Role: "user", Content: query})
 
 	req := openai.ChatCompletionRequest{
-		Model:       setting.Model,
-		Messages:    messages,
-		Stream:      true,
-		Temperature: setting.Temperature,
-		MaxTokens:   setting.MaxTokens,
-		TopP:        setting.TopP,
-		N:           setting.N,
-		Stop:        setting.Stop,
+		Model:            setting.Model,
+		Messages:         messages,
+		Stream:           true,
+		Temperature:      setting.Temperature,
+		MaxTokens:        setting.MaxTokens,
+		TopP:             setting.TopP,
+		Stop:             setting.Stop,
+		FrequencyPenalty: setting.FrequencyPenalty,
 	}
 	client := llm.NewLLMClient()
 	stream, err := client.CreateChatCompletionStream(context.Background(), req)
