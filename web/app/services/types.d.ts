@@ -46,3 +46,13 @@ interface IChatMessage {
   role: string;
   content: string;
 }
+
+interface IChatSetting {
+  system_prompt?: string;
+  use_history?: boolean;
+  max_tokens?: number;
+  temperature?: number;
+  top_p?: number;
+  stop?: string[];
+  frequency_penalty?: number;
+}

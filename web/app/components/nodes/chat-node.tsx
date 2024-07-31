@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { useEffect, useRef, useState } from "react";
+import { startTransition, useEffect, useRef, useState } from "react";
 import { produce } from "immer";
 import { useThrottleFn } from "ahooks";
 import {
@@ -16,6 +16,8 @@ import { fetchStream } from "@/services/base";
 import { ModelIcon } from "./model-icon";
 import { toast } from "../ui/use-toast";
 import { eventBus } from "../space/state/event";
+import { ArrowLeft, Settings } from "lucide-react";
+import { ChatSetting } from "./chat-setting";
 
 const controlStyle = {
   background: "transparent",
@@ -31,12 +33,13 @@ const handleStyle = {
 interface INodeData {
   spaceId: number;
   model?: IModelProvider;
+  setting?: IChatSetting;
 }
 
 export function ChatNode(props: NodeProps<INodeData>) {
   const {
     id: nodeId,
-    data: { model, spaceId },
+    data: { model, spaceId, setting },
   } = props;
 
   const { data: chatHistory } = useSWR<IChatMessage[]>(
@@ -50,6 +53,7 @@ export function ChatNode(props: NodeProps<INodeData>) {
     { id: number; role: string; content: string }[]
   >([]);
 
+  const [showSettings, setShowSettings] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -84,9 +88,10 @@ export function ChatNode(props: NodeProps<INodeData>) {
       const node_id = nodeId ? parseInt(nodeId) : null;
       const space_id = spaceId;
 
+      const chatSetting = { ...setting, model: model?.value };
       const stream = await fetchStream("/api/space/chat", {
         method: "POST",
-        body: { space_id, node_id, query, setting: { model: model?.value } },
+        body: { space_id, node_id, query, setting: chatSetting },
       });
       const reader = stream.body
         ?.pipeThrough(new TextDecoderStream())
@@ -172,56 +177,79 @@ export function ChatNode(props: NodeProps<INodeData>) {
             <span>Chat</span>
           </div>
 
-          {props.data.model && (
-            <div className="ml-auto text-xs text-muted-foreground border p-0.5 rounded-md bg-muted">
-              {props.data.model?.label || "No Model"}
-            </div>
-          )}
-        </div>
-        <div className="flex-auto overflow-hidden select-text">
-          {items.length > 0 ? (
+          {showSettings ? (
             <div
-              className="w-full h-full overflow-y-auto nowheel px-2"
-              ref={scrollRef}
+              className="ml-auto nodrag p-1 hover:bg-muted rounded flex items-center gap-1 text-xs text-muted-foreground"
+              onClick={() => startTransition(() => setShowSettings(false))}
             >
-              {items.map((item, index) => (
-                <div
-                  key={item.id || index}
-                  className={cn(
-                    "py-2 flex",
-                    item.role === "user" ? "justify-end" : "justify-start"
-                  )}
-                >
-                  {item.role === "user" ? (
-                    <div
-                      className="nodrag max-w-[90%] bg-muted py-3 px-4 text-sm whitespace-pre-wrap break-words [word-break:break-word]
-                    rounded-l-lg rounded-br-lg"
-                    >
-                      {item.content}
-                    </div>
-                  ) : (
-                    <div className="nodrag max-w-[90%] bg-muted py-3 px-4 rounded-r-lg rounded-bl-lg">
-                      <MarkdownContent content={item.content} />
-                    </div>
-                  )}
-                </div>
-              ))}
+              <ArrowLeft className="w-3 h-3 " />
+              <span>Back</span>
             </div>
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground/50">
-              Say everything you want
-            </div>
+            <>
+              {props.data.model && (
+                <div className="ml-auto text-xs text-muted-foreground border p-0.5 rounded-md bg-muted">
+                  {props.data.model?.label || "No Model"}
+                </div>
+              )}
+
+              <div
+                className="nodrag p-0.5 hover:bg-muted rounded ml-1"
+                onClick={() => setShowSettings(true)}
+              >
+                <Settings className="w-4 h-4 text-muted-foreground" />
+              </div>
+            </>
           )}
         </div>
-        <div className="nowheel nodrag flex-none p-2">
-          <ChatInput
-            loading={loading}
-            onSend={handleChat}
-            onFocus={(f) => {
-              if (f) storeApi.getState().addSelectedNodes([props.id]);
-            }}
-          />
-        </div>
+
+        {showSettings ? (
+          <ChatSetting setting={setting} nodeId={nodeId} />
+        ) : (
+          <>
+            <div className="flex-auto overflow-hidden select-text">
+              {items.length > 0 ? (
+                <div
+                  className="w-full h-full overflow-y-auto nowheel px-2"
+                  ref={scrollRef}
+                >
+                  {items.map((item, index) => (
+                    <div
+                      key={item.id || index}
+                      className={cn(
+                        "py-2 flex",
+                        item.role === "user" ? "justify-end" : "justify-start"
+                      )}
+                    >
+                      {item.role === "user" ? (
+                        <div className="nodrag max-w-[90%] bg-muted py-3 px-4 text-sm whitespace-pre-wrap break-words [word-break:break-word] rounded-l-lg rounded-br-lg">
+                          {item.content}
+                        </div>
+                      ) : (
+                        <div className="nodrag max-w-[90%] bg-muted py-3 px-4 rounded-r-lg rounded-bl-lg">
+                          <MarkdownContent content={item.content} />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground/50">
+                  Say everything you want
+                </div>
+              )}
+            </div>
+            <div className="nowheel nodrag flex-none p-2">
+              <ChatInput
+                loading={loading}
+                onSend={handleChat}
+                onFocus={(f) => {
+                  if (f) storeApi.getState().addSelectedNodes([props.id]);
+                }}
+              />
+            </div>
+          </>
+        )}
       </div>
     </>
   );
